@@ -20,10 +20,11 @@
 ---
 
 <!-- DEMO GIF PLACEHOLDER — replace with real recording -->
-> 📽️ **Demo GIF** — Record your screen and replace the image below with your GIF  
-> *(Tools: [Licecap](https://www.cockos.com/licecap/), [Kap](https://getkap.co/), or [ScreenToGif](https://www.screentogif.com/))*
+> 📽️ **Demo GIF** — A small demo of the application
 
-![LoanMatters Demo](https://placehold.co/900x500/1a1a2e/ffffff?text=📊+LoanMatters+Demo+GIF+Here)
+
+![LoanMatters Demo](<img width="800" height="385" alt="demovideoloanrecord-ezgif com-speed" src="https://github.com/user-attachments/assets/07da02d6-7ed3-40b1-b3ae-5e89435908e8" />
+)
 
 </div>
 
@@ -195,25 +196,29 @@ GROQ_API_KEY=gsk_xxxxxxxxxxxxxxxxxxxxx
 
 > Paste or search for loan offers and compare them on a single screen
 
-![Compare Feature](https://placehold.co/860x400/0f172a/94a3b8?text=🔄+Loan+Comparison+GIF)
+![Compare Feature](<img width="1530" height="864" alt="image" src="https://github.com/user-attachments/assets/58355e23-8971-4217-849b-bfc861647bb6" />
+)
 
 ### 2. Ask the AI Advisor
 
 > Type any question in plain English — "What is a moratorium period?" or "Which loan has lower total cost?"
 
-![AI Chat](https://placehold.co/860x400/0f172a/94a3b8?text=🤖+AI+Advisor+Chat+GIF)
+![AI Chat](<img width="1494" height="844" alt="image" src="https://github.com/user-attachments/assets/970cf80c-2121-4342-8dcb-a6e8d77c9d26" />
+)
 
 ### 3. Calculate Your ROI
 
 > Enter your expected first-year salary and watch the break-even timeline update in real time
 
-![ROI Calculator](https://placehold.co/860x400/0f172a/94a3b8?text=📈+ROI+Calculator+GIF)
+![ROI Calculator](<img width="1496" height="855" alt="image" src="https://github.com/user-attachments/assets/499300e0-7393-4041-9ef4-f3e263b99b81" />
+)
 
-### 4. Export as PDF
+### 4. Loan Application Builder
 
-> Download a clean PDF report to share with your parents or education counselor
+> You can build your custom loan aplication with the help of this tool
 
-![PDF Export](https://placehold.co/860x400/0f172a/94a3b8?text=📄+PDF+Export+GIF)
+![PDF Export](<img width="1460" height="828" alt="image" src="https://github.com/user-attachments/assets/2596858c-4c76-44f4-8c5f-c7d8513f68ac" />
+)
 
 ---
 
