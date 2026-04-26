@@ -30,6 +30,7 @@ export async function POST(request: NextRequest) {
         include_answer: true,
         include_raw_content: false,
         include_images: false,
+        days: 90,
       }),
     })
 
