@@ -2,7 +2,17 @@ import { createClient } from "@/lib/supabase/server"
 import Link from "next/link"
 import Image from "next/image"
 import { notFound } from "next/navigation"
-import { ArrowLeft, Calendar, Clock, User, Tag, Share2, Bookmark, ChevronLeft, ChevronRight } from "lucide-react"
+import {
+  ArrowLeft,
+  Calendar,
+  Clock,
+  User,
+  Tag,
+  Share2,
+  Bookmark,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -16,6 +26,8 @@ interface PageProps {
 
 async function getBlog(slug: string): Promise<Blog | null> {
   const supabase = await createClient()
+  if (!supabase) return null
+
   const { data, error } = await supabase
     .from("blogs")
     .select("*")
@@ -39,6 +51,8 @@ async function getBlog(slug: string): Promise<Blog | null> {
 
 async function getRelatedBlogs(currentBlog: Blog): Promise<Blog[]> {
   const supabase = await createClient()
+  if (!supabase) return []
+
   const { data, error } = await supabase
     .from("blogs")
     .select("*")
@@ -66,7 +80,7 @@ function formatDate(dateString: string) {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params
   const blog = await getBlog(slug)
-  
+
   if (!blog) {
     return {
       title: "Blog Not Found | LoanMatters",
@@ -94,7 +108,10 @@ export default async function BlogDetailPage({ params }: PageProps) {
       {/* Header */}
       <header className="sticky top-0 z-50 bg-card/80 backdrop-blur-xl border-b border-border">
         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/blog" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
+          <Link
+            href="/blog"
+            className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+          >
             <ArrowLeft className="w-4 h-4" />
             <span className="text-sm font-medium">Back to Blog</span>
           </Link>
@@ -122,14 +139,12 @@ export default async function BlogDetailPage({ params }: PageProps) {
               </Badge>
             ))}
           </div>
-          
+
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-6 leading-tight">
             {blog.title}
           </h1>
-          
-          <p className="text-xl text-muted-foreground mb-8">
-            {blog.excerpt}
-          </p>
+
+          <p className="text-xl text-muted-foreground mb-8">{blog.excerpt}</p>
 
           <div className="flex items-center justify-between flex-wrap gap-4 pb-8 border-b border-border">
             <div className="flex items-center gap-4">
@@ -160,27 +175,19 @@ export default async function BlogDetailPage({ params }: PageProps) {
                 </div>
               </div>
             </div>
-            <div className="text-sm text-muted-foreground">
-              {blog.views.toLocaleString()} views
-            </div>
+            <div className="text-sm text-muted-foreground">{blog.views.toLocaleString()} views</div>
           </div>
         </header>
 
         {/* Cover Image */}
         {blog.cover_image && (
           <div className="relative w-full aspect-video rounded-2xl overflow-hidden mb-12 opacity-0 animate-fade-slide-up animation-delay-100">
-            <Image
-              src={blog.cover_image}
-              alt={blog.title}
-              fill
-              className="object-cover"
-              priority
-            />
+            <Image src={blog.cover_image} alt={blog.title} fill className="object-cover" priority />
           </div>
         )}
 
         {/* Content */}
-        <div 
+        <div
           className="prose prose-lg max-w-none opacity-0 animate-fade-slide-up animation-delay-200
             prose-headings:text-foreground prose-headings:font-semibold
             prose-p:text-muted-foreground prose-p:leading-relaxed
@@ -223,9 +230,12 @@ export default async function BlogDetailPage({ params }: PageProps) {
                 )}
               </div>
               <div>
-                <h3 className="font-semibold text-foreground mb-1">Written by {blog.author_name}</h3>
+                <h3 className="font-semibold text-foreground mb-1">
+                  Written by {blog.author_name}
+                </h3>
                 <p className="text-sm text-muted-foreground">
-                  Expert insights on education loans, study abroad, and financial planning for STEM students.
+                  Expert insights on education loans, study abroad, and financial planning for STEM
+                  students.
                 </p>
               </div>
             </div>
@@ -240,7 +250,10 @@ export default async function BlogDetailPage({ params }: PageProps) {
           <div className="grid md:grid-cols-3 gap-6">
             {relatedBlogs.map((relatedBlog, i) => (
               <Link key={relatedBlog.id} href={`/blog/${relatedBlog.slug}`}>
-                <Card className="h-full overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 opacity-0 animate-fade-slide-up" style={{ animationDelay: `${i * 100}ms` }}>
+                <Card
+                  className="h-full overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 opacity-0 animate-fade-slide-up"
+                  style={{ animationDelay: `${i * 100}ms` }}
+                >
                   <div className="relative h-40 bg-secondary">
                     {relatedBlog.cover_image ? (
                       <Image
@@ -261,9 +274,15 @@ export default async function BlogDetailPage({ params }: PageProps) {
                     )}
                   </div>
                   <CardContent className="p-5">
-                    <Badge variant="outline" className="text-xs mb-2">{relatedBlog.category}</Badge>
-                    <h3 className="font-semibold text-foreground mb-2 line-clamp-2">{relatedBlog.title}</h3>
-                    <p className="text-sm text-muted-foreground line-clamp-2">{relatedBlog.excerpt}</p>
+                    <Badge variant="outline" className="text-xs mb-2">
+                      {relatedBlog.category}
+                    </Badge>
+                    <h3 className="font-semibold text-foreground mb-2 line-clamp-2">
+                      {relatedBlog.title}
+                    </h3>
+                    <p className="text-sm text-muted-foreground line-clamp-2">
+                      {relatedBlog.excerpt}
+                    </p>
                   </CardContent>
                 </Card>
               </Link>
@@ -275,11 +294,17 @@ export default async function BlogDetailPage({ params }: PageProps) {
       {/* Navigation */}
       <div className="max-w-4xl mx-auto px-6 pb-12">
         <div className="flex items-center justify-between">
-          <Link href="/blog" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
+          <Link
+            href="/blog"
+            className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+          >
             <ChevronLeft className="w-4 h-4" />
             <span>All Articles</span>
           </Link>
-          <Link href="/dashboard" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
+          <Link
+            href="/dashboard"
+            className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+          >
             <span>Go to Dashboard</span>
             <ChevronRight className="w-4 h-4" />
           </Link>

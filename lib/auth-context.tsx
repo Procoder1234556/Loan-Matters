@@ -1,7 +1,7 @@
 "use client"
 
 import { createContext, useContext, useEffect, useState, ReactNode } from "react"
-import { createClient } from "@/lib/supabase/client"
+import { createClient, isSupabaseConfigured } from "@/lib/supabase/client"
 import { User, Session } from "@supabase/supabase-js"
 
 interface AuthContextType {
@@ -9,22 +9,31 @@ interface AuthContextType {
   session: Session | null
   loading: boolean
   signOut: () => Promise<void>
+  isSupabaseEnabled: boolean
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
   session: null,
-  loading: true,
+  loading: false,
   signOut: async () => {},
+  isSupabaseEnabled: false,
 })
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [session, setSession] = useState<Session | null>(null)
-  const [loading, setLoading] = useState(true)
-  const supabase = createClient()
+  // If Supabase isn't configured, start as not loading (nothing to load)
+  const [loading, setLoading] = useState(isSupabaseConfigured)
 
   useEffect(() => {
+    // Skip entirely if Supabase isn't configured (open-source / local mode)
+    if (!isSupabaseConfigured) return
+
+    // Create the client lazily inside the effect — safe for SSR
+    const supabase = createClient()
+    if (!supabase) return
+
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
@@ -33,23 +42,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     })
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setSession(session)
-        setUser(session?.user ?? null)
-        setLoading(false)
-      }
-    )
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session)
+      setUser(session?.user ?? null)
+      setLoading(false)
+    })
 
     return () => subscription.unsubscribe()
-  }, [supabase.auth])
+  }, [])
 
   const signOut = async () => {
+    const supabase = createClient()
+    if (!supabase) return
     await supabase.auth.signOut()
   }
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, signOut }}>
+    <AuthContext.Provider
+      value={{ user, session, loading, signOut, isSupabaseEnabled: isSupabaseConfigured }}
+    >
       {children}
     </AuthContext.Provider>
   )
