@@ -7,7 +7,7 @@
   "author": "LoanMatters Team",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/loanmatters"
+    "url": "https://github.com/Procoder1234556/Loan-Matters"
   },
   "keywords": [
     "education-loan",
@@ -23,7 +23,21 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "postinstall": "echo '\\n✅ Installation complete! Run: npm run dev\\n'"
+    "lint:fix": "eslint . --fix",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "husky",
+    "postinstall": "echo '\\n✅ Installation complete! Run: pnpm dev\\n'"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{js,mjs,json,md,yml,yaml,css}": [
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
@@ -81,11 +95,19 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.5",
+    "@eslint/js": "^10.0.1",
     "@tailwindcss/postcss": "^4.2.0",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "^16.2.4",
+    "eslint-config-prettier": "^10.1.5",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.1",
     "postcss": "^8.5",
+    "prettier": "^3.5.3",
     "tailwindcss": "^4.2.0",
     "tw-animate-css": "1.3.3",
     "typescript": "5.7.3"
