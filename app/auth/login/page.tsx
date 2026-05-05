@@ -7,7 +7,14 @@ import Image from "next/image"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Mail, Lock, Loader2, ArrowLeft, GraduationCap } from "lucide-react"
 import { IMAGES } from "@/lib/images"
@@ -19,12 +26,18 @@ export default function LoginPage() {
   const [googleLoading, setGoogleLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
-  const supabase = createClient()
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError(null)
+
+    const supabase = createClient()
+    if (!supabase) {
+      setError("Auth not configured")
+      setLoading(false)
+      return
+    }
 
     const { error } = await supabase.auth.signInWithPassword({
       email,
@@ -44,10 +57,18 @@ export default function LoginPage() {
     setGoogleLoading(true)
     setError(null)
 
+    const supabase = createClient()
+    if (!supabase) {
+      setError("Auth not configured")
+      setGoogleLoading(false)
+      return
+    }
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ?? 
+        redirectTo:
+          process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ??
           `${window.location.origin}/auth/callback`,
       },
     })
@@ -67,8 +88,8 @@ export default function LoginPage() {
       </div>
 
       <div className="w-full max-w-md relative z-10">
-        <Link 
-          href="/" 
+        <Link
+          href="/"
           className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
@@ -81,16 +102,14 @@ export default function LoginPage() {
               <GraduationCap className="w-8 h-8 text-primary-foreground" />
             </div>
             <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
-            <CardDescription>
-              Sign in to access your saved calculations and history
-            </CardDescription>
+            <CardDescription>Sign in to access your saved calculations and history</CardDescription>
           </CardHeader>
 
           <CardContent className="space-y-4 pt-4">
             {/* Google Login */}
-            <Button 
-              variant="outline" 
-              className="w-full h-12 gap-3" 
+            <Button
+              variant="outline"
+              className="w-full h-12 gap-3"
               onClick={handleGoogleLogin}
               disabled={googleLoading || loading}
             >

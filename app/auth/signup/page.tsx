@@ -6,7 +6,14 @@ import Image from "next/image"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Mail, Lock, User, Loader2, ArrowLeft, GraduationCap, CheckCircle } from "lucide-react"
 import { IMAGES } from "@/lib/images"
@@ -19,18 +26,25 @@ export default function SignUpPage() {
   const [googleLoading, setGoogleLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
-  const supabase = createClient()
 
   const handleEmailSignUp = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError(null)
 
+    const supabase = createClient()
+    if (!supabase) {
+      setError("Auth not configured")
+      setLoading(false)
+      return
+    }
+
     const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ?? 
+        emailRedirectTo:
+          process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ??
           `${window.location.origin}/auth/callback`,
         data: {
           full_name: fullName,
@@ -51,10 +65,18 @@ export default function SignUpPage() {
     setGoogleLoading(true)
     setError(null)
 
+    const supabase = createClient()
+    if (!supabase) {
+      setError("Auth not configured")
+      setGoogleLoading(false)
+      return
+    }
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ?? 
+        redirectTo:
+          process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ??
           `${window.location.origin}/auth/callback`,
       },
     })
@@ -75,8 +97,8 @@ export default function SignUpPage() {
             </div>
             <h2 className="text-2xl font-bold mb-2">Check your email</h2>
             <p className="text-muted-foreground mb-6">
-              We&apos;ve sent a confirmation link to <strong>{email}</strong>. 
-              Please click the link to verify your account.
+              We&apos;ve sent a confirmation link to <strong>{email}</strong>. Please click the link
+              to verify your account.
             </p>
             <Link href="/auth/login">
               <Button variant="outline" className="w-full">
@@ -98,8 +120,8 @@ export default function SignUpPage() {
       </div>
 
       <div className="w-full max-w-md relative z-10">
-        <Link 
-          href="/" 
+        <Link
+          href="/"
           className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
@@ -119,9 +141,9 @@ export default function SignUpPage() {
 
           <CardContent className="space-y-4 pt-4">
             {/* Google Sign Up */}
-            <Button 
-              variant="outline" 
-              className="w-full h-12 gap-3" 
+            <Button
+              variant="outline"
+              className="w-full h-12 gap-3"
               onClick={handleGoogleSignUp}
               disabled={googleLoading || loading}
             >
@@ -245,12 +267,7 @@ export default function SignUpPage() {
         {/* Stick figure illustration */}
         <div className="mt-8 flex justify-center opacity-30">
           <div className="relative w-32 h-32">
-            <Image
-              src={IMAGES.hero}
-              alt="Welcome illustration"
-              fill
-              className="object-contain"
-            />
+            <Image src={IMAGES.hero} alt="Welcome illustration" fill className="object-contain" />
           </div>
         </div>
       </div>
