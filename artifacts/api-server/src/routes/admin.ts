@@ -1,8 +1,15 @@
 import { Router } from "express"
 import type { Request, Response, NextFunction } from "express"
 import { randomUUID } from "crypto"
+import { readFileSync, writeFileSync, mkdirSync } from "fs"
+import { join, dirname } from "path"
+import { fileURLToPath } from "url"
 
 const router = Router()
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
+const DATA_DIR = join(__dirname, "..", "..", "data")
+const BLOGS_FILE = join(DATA_DIR, "blogs.json")
 
 interface BlogPost {
   id: string
@@ -23,9 +30,34 @@ interface BlogPost {
   updated_at: string
 }
 
-const posts: Map<string, BlogPost> = new Map()
+// ── File-backed persistence ───────────────────────────────────────────────────
 
-// ── Server-side admin auth ──────────────────────────────────────────────────
+function loadPosts(): Map<string, BlogPost> {
+  try {
+    mkdirSync(DATA_DIR, { recursive: true })
+    const raw = readFileSync(BLOGS_FILE, "utf-8")
+    const { posts } = JSON.parse(raw) as { posts: BlogPost[] }
+    const map = new Map<string, BlogPost>()
+    for (const p of posts) map.set(p.id, p)
+    return map
+  } catch {
+    return new Map()
+  }
+}
+
+function savePosts(posts: Map<string, BlogPost>): void {
+  try {
+    mkdirSync(DATA_DIR, { recursive: true })
+    writeFileSync(BLOGS_FILE, JSON.stringify({ posts: Array.from(posts.values()) }, null, 2), "utf-8")
+  } catch (err) {
+    console.error("Failed to persist blog posts:", err)
+  }
+}
+
+const posts: Map<string, BlogPost> = loadPosts()
+
+// ── Server-side admin auth ────────────────────────────────────────────────────
+
 function requireAdminAuth(req: Request, res: Response, next: NextFunction): void {
   const adminPassword = process.env.ADMIN_PASSWORD
   if (!adminPassword) {
@@ -45,7 +77,7 @@ function requireAdminAuth(req: Request, res: Response, next: NextFunction): void
   next()
 }
 
-// ── Public read endpoints (no auth) ─────────────────────────────────────────
+// ── Public read endpoints (no auth) ──────────────────────────────────────────
 
 // GET /api/blogs  — all published posts
 router.get("/blogs", (_req: Request, res: Response) => {
@@ -63,8 +95,10 @@ router.get("/blogs/:slug", (req: Request, res: Response): void => {
     res.status(404).json({ error: "Post not found" })
     return
   }
-  posts.set(post.id, { ...post, views: post.views + 1 })
-  res.json({ post })
+  const updated = { ...post, views: post.views + 1 }
+  posts.set(post.id, updated)
+  savePosts(posts)
+  res.json({ post: updated })
 })
 
 // ── Admin CRUD endpoints (auth required) ─────────────────────────────────────
@@ -105,6 +139,7 @@ router.post("/admin/blogs", requireAdminAuth, (req: Request, res: Response): voi
     updated_at: now,
   }
   posts.set(post.id, post)
+  savePosts(posts)
   res.status(201).json({ post })
 })
 
@@ -134,6 +169,7 @@ router.put("/admin/blogs", requireAdminAuth, (req: Request, res: Response): void
     updated_at: new Date().toISOString(),
   }
   posts.set(id, updated)
+  savePosts(posts)
   res.json({ post: updated })
 })
 
@@ -145,6 +181,7 @@ router.delete("/admin/blogs", requireAdminAuth, (req: Request, res: Response): v
     return
   }
   posts.delete(id)
+  savePosts(posts)
   res.json({ success: true })
 })
 
