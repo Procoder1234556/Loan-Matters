@@ -1,0 +1,127 @@
+You are building LoanMatters — an AI-powered education loan comparison platform for Indian STEM students planning to study abroad (US, UK, Canada, Germany, Australia). The live site is at https://loan-matters.vercel.app/. Stack: Next.js 14 (App Router) + Tailwind CSS on the frontend, Node.js/Express for the backend API, PostgreSQL via Supabase for data, and a separate PHP 8+ admin panel for blog management.
+Core brand values:
+
+We never sell user data. We never spam. We just compare.
+Faster, cleaner, more honest than BankBazaar or Paisabazaar.
+Niche: education loans for abroad studies — go deep, not broad.
+
+Stack constraints:
+
+Frontend: Next.js 14, App Router, Tailwind CSS, TypeScript
+Backend API: Node.js + Express (deployed on Railway)
+Database: Supabase (PostgreSQL)
+Admin panel: PHP 8 + MySQL (deployed on Hostinger or any VPS)
+Rate updates: Vercel Cron Jobs (every 6 hours)
+No .env file to be created or overwritten — use .env.example only
+
+
+PHASE 1 — Next.js SSR Foundation + SEO Infrastructure
+Goal
+Fix the core rendering issue (currently CSR only), add full SEO meta infrastructure, and set up the project structure for all future phases.
+Instructions
+1. Enable SSR on all key pages.
+In app/page.tsx (homepage), switch from a client component to a server component. Fetch loan data from Supabase directly in the server component:
+typescript// app/page.tsx
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
+
+export const revalidate = 21600 // revalidate every 6 hours (ISR)
+
+export default async function HomePage() {
+  const { data: loans } = await supabase
+    .from('loans')
+    .select('*')
+    .order('interest_rate_min', { ascending: true })
+
+  return <LoanListClient loans={loans ?? []} />
+}
+2. Add full metadata to every page.
+Create app/layout.tsx with complete metadata:
+typescriptexport const metadata: Metadata = {
+  metadataBase: new URL('https://loanmatters.in'),
+  title: {
+    template: '%s | LoanMatters',
+    default: 'LoanMatters — Education Loan Comparison for STEM Students Abroad'
+  },
+  description: 'Compare education loans from SBI, HDFC Credila, Avanse, Auxilo for MS, MBA, and PhD abroad. Real rates. No spam. No data selling.',
+  keywords: ['education loan', 'HDFC Credila', 'Avanse', 'MS in USA loan', 'study abroad loan India', 'education loan comparison'],
+  openGraph: {
+    type: 'website',
+    locale: 'en_IN',
+    siteName: 'LoanMatters',
+    images: [{ url: '/og-image.png', width: 1200, height: 630 }]
+  },
+  twitter: { card: 'summary_large_image', site: '@loanmatters' },
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
+  alternates: { canonical: 'https://loanmatters.in' }
+}
+3. Create dynamic metadata for comparison pages.
+typescript// app/compare/[slug]/page.tsx
+export async function generateMetadata({ params }): Promise<Metadata> {
+  const loan = await getLoanBySlug(params.slug)
+  return {
+    title: `${loan.lender_name} Education Loan — Rates, Eligibility & Review`,
+    description: `${loan.lender_name} education loan: interest rate ${loan.interest_rate_min}%–${loan.interest_rate_max}%, max ₹${loan.max_amount_lakhs}L, collateral ${loan.collateral_required ? 'required' : 'not required'}. Compare with other lenders.`,
+    alternates: { canonical: `https://loanmatters.in/compare/${params.slug}` }
+  }
+}
+4. Install and configure next-sitemap.
+bashnpm install next-sitemap
+Create next-sitemap.config.js:
+javascriptmodule.exports = {
+  siteUrl: 'https://loanmatters.in',
+  generateRobotsTxt: true,
+  robotsTxtOptions: {
+    policies: [
+      { userAgent: '*', allow: '/' },
+      { userAgent: 'GPTBot', allow: '/' },
+      { userAgent: 'ClaudeBot', allow: '/' },
+      { userAgent: 'PerplexityBot', allow: '/' },
+      { userAgent: 'Googlebot', allow: '/' },
+    ],
+    additionalSitemaps: ['https://loanmatters.in/sitemap-blog.xml'],
+  },
+  additionalPaths: async (config) => [
+    await config.transform(config, '/compare'),
+    await config.transform(config, '/calculator'),
+    await config.transform(config, '/blog'),
+    await config.transform(config, '/about'),
+    await config.transform(config, '/legal/privacy-policy'),
+    await config.transform(config, '/legal/terms'),
+    await config.transform(config, '/legal/disclaimer'),
+  ],
+}
+Add to package.json:
+json"postbuild": "next-sitemap"
+5. Create public/llms.txt:
+# LoanMatters
+> AI-powered education loan comparison for Indian STEM students planning to study abroad.
+> We are an information-only platform. We do not originate loans, collect applications, or sell user data.
+
+## What's here
+- / — Homepage with loan comparison table (SSR, updated every 6 hours)
+- /compare — Side-by-side comparison of SBI, HDFC Credila, Avanse, Auxilo, ICICI, Axis
+- /compare/[lender-slug] — Individual lender deep-dive page
+- /calculator — EMI calculator + ROI calculator for education loans
+- /blog — Guides on Indian education loan products, eligibility, and abroad studies
+- /api/loans — Machine-readable loan data (JSON, public, no auth required)
+- /api/blog — Blog posts JSON feed
+- /llms-full.txt — Complete flat-text version of all loan data for AI ingestion
+
+## Key data points available
+- Interest rates (min/max) for 15+ lenders
+- Collateral requirements by loan amount
+- Countries and courses covered
+- Processing fees and prepayment charges
+- Government subsidy eligibility (CSIS, Dr. Ambedkar scheme)
+- Last updated timestamp on every rate
+
+## Contact
+- Grievance Officer: [Your Name], grievance@loanmatters.in
+- Website: https://loanmatters.in
+6. Create public/llms-full.txt — a plain-text file with ALL loan data written out in natural language (one paragraph per lender). This is what Perplexity, ChatGPT, and Claude fetch when answering education loan queries. Update this file whenever rates change.
+7. Create public/.well-known/security.txt with your contact info (builds trust with crawlers and auditors).
