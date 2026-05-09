@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react"
 import { Link } from "wouter"
-import { ArrowRight, GraduationCap, Calculator, BarChart3, Sparkles, TrendingUp, Shield, Users, Globe, RefreshCw, ExternalLink, Loader2, BookOpen, Download } from "lucide-react"
+import {
+  ArrowRight, GraduationCap, Calculator, BarChart3, Sparkles, TrendingUp,
+  Shield, Users, Globe, RefreshCw, ExternalLink, Loader2, BookOpen, Star,
+  ChevronRight, IndianRupee, BadgeCheck, Phone
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { PWAInstallPrompt } from "@/components/pwa-install-prompt"
-import { DownloadAppButton } from "@/components/download-app-button"
+import { HeroEmiCalculator } from "@/components/hero-emi-calculator"
 import { IMAGES } from "@/lib/images"
 
 interface MarketTrend {
@@ -12,6 +14,13 @@ interface MarketTrend {
   results: { title: string; url: string; snippet: string }[]
   fetchedAt: string
 }
+
+const TOOLS = [
+  { id: "emi", label: "EMI Calculator", icon: Calculator },
+  { id: "compare", label: "Loan Comparison", icon: BarChart3 },
+  { id: "roi", label: "ROI Calculator", icon: TrendingUp },
+  { id: "ai", label: "Ask AI", icon: Sparkles },
+]
 
 export default function LandingPage() {
   const [marketTrends, setMarketTrends] = useState<MarketTrend | null>(null)
@@ -22,278 +31,238 @@ export default function LandingPage() {
     try {
       const storedConfig = localStorage.getItem("loanmatters_api_config")
       const tavilyApiKey = storedConfig ? JSON.parse(storedConfig).tavilyApiKey : undefined
-      const url = tavilyApiKey ? `/api/market-trends?tavilyApiKey=${encodeURIComponent(tavilyApiKey)}` : "/api/market-trends"
+      const url = tavilyApiKey
+        ? `/api/market-trends?tavilyApiKey=${encodeURIComponent(tavilyApiKey)}`
+        : "/api/market-trends"
       const response = await fetch(url)
-      if (response.ok) {
-        const data = await response.json()
-        setMarketTrends(data)
-      }
-    } catch (error) {
-      console.error("Failed to fetch market trends:", error)
-    } finally {
+      if (response.ok) setMarketTrends(await response.json())
+    } catch { /* silent */ } finally {
       setIsLoadingTrends(false)
     }
   }
 
-  useEffect(() => {
-    fetchMarketTrends()
-  }, [])
+  useEffect(() => { fetchMarketTrends() }, [])
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-border/50">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-              <GraduationCap className="w-5 h-5 text-primary-foreground" />
+    <div className="min-h-screen bg-gray-50 font-sans">
+
+      {/* ── Top Utility Bar ── */}
+      <div className="bg-blue-700 text-white text-xs py-1.5 px-6 hidden md:flex items-center justify-between">
+        <span className="flex items-center gap-2">
+          <BadgeCheck className="w-3.5 h-3.5" />
+          RBI-compliant data · Trusted by 10,000+ STEM students
+        </span>
+        <div className="flex items-center gap-4">
+          <span className="flex items-center gap-1.5"><Phone className="w-3 h-3" />Help: Mon–Sat 9:30–6:30</span>
+          <Link href="/blog" className="hover:underline flex items-center gap-1">
+            <BookOpen className="w-3 h-3" /> Blog
+          </Link>
+        </div>
+      </div>
+
+      {/* ── Main Nav ── */}
+      <nav className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex items-center justify-between h-14">
+            {/* Logo */}
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center">
+                <GraduationCap className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <span className="text-lg font-black text-gray-900 leading-none">Loan<span className="text-blue-600">Matters</span></span>
+                <p className="text-[10px] text-gray-400 leading-none">Education Loan Clarity</p>
+              </div>
             </div>
-            <span className="text-xl font-semibold text-foreground">LoanMatters</span>
-          </div>
-          
-          <div className="hidden md:flex items-center gap-8">
-            <a href="#features" className="text-muted-foreground hover:text-foreground transition-colors">Features</a>
-            <a href="#trends" className="text-muted-foreground hover:text-foreground transition-colors">Live Trends</a>
-            <a href="#how-it-works" className="text-muted-foreground hover:text-foreground transition-colors">How it Works</a>
-            <Link href="/blog" className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">
-              <BookOpen className="w-4 h-4" />
-              Blog
-            </Link>
-          </div>
-          
-          <div className="flex items-center gap-3">
-            <DownloadAppButton variant="outline" />
-            <Link href="/dashboard">
-              <Button className="rounded-full px-6">
-                Get Started
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
-            </Link>
+
+            {/* Product Nav */}
+            <div className="hidden md:flex items-center gap-1">
+              {TOOLS.map((t) => (
+                <Link key={t.id} href="/dashboard">
+                  <button className="flex items-center gap-1.5 px-4 py-2 text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors font-medium">
+                    <t.icon className="w-3.5 h-3.5" />
+                    {t.label}
+                  </button>
+                </Link>
+              ))}
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center gap-2">
+              <Link href="/login">
+                <button className="hidden md:block text-sm text-gray-600 hover:text-blue-600 font-medium px-3 py-2">
+                  Sign In
+                </button>
+              </Link>
+              <Link href="/dashboard">
+                <button className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors flex items-center gap-1.5">
+                  Check Eligibility
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </Link>
+            </div>
           </div>
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="pt-32 pb-20 px-6 relative overflow-hidden">
-        <div className="absolute top-20 right-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 left-10 w-96 h-96 bg-chart-2/10 rounded-full blur-3xl" />
-        
-        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
-          <div className="space-y-8 animate-fade-slide-up">
-            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium">
-              <Sparkles className="w-4 h-4" />
-              AI-Powered Loan Intelligence
+      {/* ── Hero Section ── */}
+      <section className="bg-gradient-to-br from-blue-700 via-blue-600 to-blue-500 text-white">
+        <div className="max-w-7xl mx-auto px-6 py-12 lg:py-16 grid lg:grid-cols-[1fr_420px] gap-10 items-center">
+          {/* Left: Copy */}
+          <div className="space-y-6">
+            <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm text-white px-4 py-1.5 rounded-full text-xs font-semibold border border-white/20">
+              <Sparkles className="w-3.5 h-3.5" />
+              AI-Powered Education Loan Advisor
             </div>
-            
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-foreground leading-tight text-balance">
-              Plan your
-              <br />
-              <span className="text-primary">STEM degree</span>
-              <br />
-              with clarity
+
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black leading-tight text-balance">
+              Apply for the{" "}
+              <span className="text-yellow-300">Best Education</span>
+              <br />Loan Online
             </h1>
-            
-            <p className="text-lg text-muted-foreground max-w-lg leading-relaxed">
-              Cut through the noise with data-driven insights. Compare education loans, estimate costs, and calculate ROI for your international degree.
+
+            <p className="text-blue-100 text-lg leading-relaxed max-w-xl">
+              Compare interest rates from 15+ lenders, calculate your EMI instantly,
+              and get AI-powered insights — all in one place.
             </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link href="/dashboard">
-                <Button size="lg" className="rounded-full px-8 h-14 text-base animate-pulse-glow">
-                  Start Planning Now
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-              </Link>
-              <Button size="lg" variant="outline" className="rounded-full px-8 h-14 text-base">
-                Watch Demo
-              </Button>
+
+            {/* Trust strip */}
+            <div className="flex flex-wrap gap-5">
+              {[
+                { icon: Users, text: "10,000+ Students" },
+                { icon: Shield, text: "Secure & Private" },
+                { icon: BadgeCheck, text: "15+ Lenders" },
+                { icon: Globe, text: "Real-time Rates" },
+              ].map((item, i) => (
+                <div key={i} className="flex items-center gap-2 text-sm text-blue-100">
+                  <item.icon className="w-4 h-4 text-yellow-300" />
+                  {item.text}
+                </div>
+              ))}
             </div>
-            
-            <div className="flex items-center gap-6 pt-4">
-              <div className="flex items-center gap-2">
-                <Users className="w-5 h-5 text-primary" />
-                <span className="text-sm text-muted-foreground">10,000+ Students</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Shield className="w-5 h-5 text-success" />
-                <span className="text-sm text-muted-foreground">Bank-grade Security</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Globe className="w-5 h-5 text-chart-4" />
-                <span className="text-sm text-muted-foreground">Real-time Data</span>
-              </div>
+
+            {/* CTA buttons */}
+            <div className="flex flex-col sm:flex-row gap-3 pt-2">
+              <Link href="/dashboard">
+                <button className="bg-yellow-400 hover:bg-yellow-300 text-gray-900 font-bold px-7 py-3.5 rounded-xl text-base transition-colors flex items-center gap-2">
+                  Check Eligibility Now
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </Link>
+              <Link href="/dashboard?tab=compare">
+                <button className="bg-white/15 hover:bg-white/25 border border-white/30 text-white font-semibold px-7 py-3.5 rounded-xl text-base transition-colors flex items-center gap-2">
+                  Compare Lenders
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </Link>
             </div>
           </div>
-          
-          <div className="relative animate-fade-slide-up animation-delay-200">
-            <HeroIllustration />
+
+          {/* Right: EMI Calculator (the HOOK) */}
+          <div className="lg:mt-0 mt-4">
+            <HeroEmiCalculator />
           </div>
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-16 px-6 bg-card border-y border-border">
-        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
+      {/* ── Stats Bar ── */}
+      <section className="bg-white border-b border-gray-200 shadow-sm">
+        <div className="max-w-7xl mx-auto px-6 py-5 grid grid-cols-2 md:grid-cols-4 gap-4 divide-x divide-gray-100">
           {[
-            { value: "$2.5B+", label: "Loans Analyzed" },
-            { value: "150+", label: "Universities Covered" },
-            { value: "98%", label: "Accuracy Rate" },
+            { value: "₹2.5B+", label: "Loans Analyzed" },
+            { value: "150+", label: "Universities" },
             { value: "15+", label: "Lender Partners" },
+            { value: "98%", label: "Accuracy Rate" },
           ].map((stat, i) => (
-            <div key={i} className="text-center animate-fade-slide-up" style={{ animationDelay: `${i * 100}ms` }}>
-              <div className="text-3xl md:text-4xl font-bold text-foreground">{stat.value}</div>
-              <div className="text-muted-foreground mt-1">{stat.label}</div>
+            <div key={i} className="text-center px-4 first:pl-0">
+              <div className="text-2xl font-black text-blue-600">{stat.value}</div>
+              <div className="text-xs text-gray-500 font-medium mt-0.5">{stat.label}</div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Live Market Trends Section */}
-      <section id="trends" className="py-24 px-6 bg-gradient-to-br from-primary/5 via-background to-chart-2/5">
+      {/* ── Tools Grid ── */}
+      <section className="py-16 px-6 bg-gray-50">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12 animate-fade-slide-up">
-            <div className="inline-flex items-center gap-2 bg-success/10 text-success px-4 py-2 rounded-full text-sm font-medium mb-4">
-              <Globe className="w-4 h-4" />
-              Powered by Real-Time Web Search
-            </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4 text-balance">
-              Live Market Trends
-            </h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Stay updated with the latest education loan trends and market insights, fetched in real-time.
-            </p>
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-black text-gray-900 mb-2">All Tools in One Place</h2>
+            <p className="text-gray-500">Everything you need to make a smart education loan decision</p>
           </div>
 
-          <Card className="bg-card/80 backdrop-blur-sm border-0 shadow-2xl animate-fade-slide-up animation-delay-100">
-            <CardContent className="p-8">
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-success/10 flex items-center justify-center">
-                    <TrendingUp className="w-5 h-5 text-success" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-foreground">Education Loan Insights</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {marketTrends?.fetchedAt 
-                        ? `Updated ${new Date(marketTrends.fetchedAt).toLocaleTimeString()}`
-                        : "Fetching latest data..."}
-                    </p>
-                  </div>
-                </div>
-                <Button variant="outline" size="sm" onClick={fetchMarketTrends} disabled={isLoadingTrends} className="rounded-full">
-                  <RefreshCw className={`w-4 h-4 mr-2 ${isLoadingTrends ? 'animate-spin' : ''}`} />
-                  Refresh
-                </Button>
-              </div>
-
-              {isLoadingTrends ? (
-                <div className="flex items-center justify-center py-12">
-                  <Loader2 className="w-8 h-8 animate-spin text-primary mr-3" />
-                  <span className="text-muted-foreground">Searching the web for latest trends...</span>
-                </div>
-              ) : marketTrends ? (
-                <div className="space-y-6">
-                  {marketTrends.answer && (
-                    <div className="bg-gradient-to-r from-success/10 to-primary/10 rounded-2xl p-6 border border-success/20">
-                      <h4 className="font-medium text-foreground mb-3 flex items-center gap-2">
-                        <Sparkles className="w-5 h-5 text-success" />
-                        AI Summary
-                      </h4>
-                      <p className="text-muted-foreground leading-relaxed">{marketTrends.answer}</p>
-                    </div>
-                  )}
-                  {marketTrends.results && marketTrends.results.length > 0 && (
-                    <div>
-                      <h4 className="font-medium text-foreground mb-4">Latest News & Sources</h4>
-                      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {marketTrends.results.slice(0, 6).map((source, i) => (
-                          <a key={i} href={source.url} target="_blank" rel="noopener noreferrer"
-                            className="bg-white rounded-xl p-4 border border-gray-200 hover:border-primary/50 hover:shadow-lg transition-all group"
-                          >
-                            <div className="flex items-start justify-between gap-2 mb-2">
-                              <h5 className="font-medium text-sm text-foreground line-clamp-2 group-hover:text-primary transition-colors">
-                                {source.title}
-                              </h5>
-                              <ExternalLink className="w-4 h-4 text-muted-foreground shrink-0" />
-                            </div>
-                            <p className="text-xs text-muted-foreground line-clamp-2">{source.snippet}</p>
-                          </a>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <div className="text-center py-12 text-muted-foreground">
-                  <Globe className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p>Unable to fetch market trends. Please try again.</p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section id="features" className="py-24 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16 animate-fade-slide-up">
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4 text-balance">
-              Everything you need to
-              <br />
-              <span className="text-primary">make the right choice</span>
-            </h2>
-          </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             {[
-              { icon: Calculator, title: "Cost Estimator", description: "Get detailed breakdowns with real-time tuition, living costs, visa fees, and more.", color: "bg-primary/10 text-primary", badge: "Live Data" },
-              { icon: TrendingUp, title: "ROI Calculator", description: "Calculate your break-even point with real-time salary data from job markets.", color: "bg-success/10 text-success", badge: "Live Data" },
-              { icon: BarChart3, title: "Loan Comparison", description: "Compare interest rates, terms, and benefits from 15+ leading lenders.", color: "bg-warning/10 text-warning", badge: "Live Data" },
-              { icon: Sparkles, title: "AI Assistant", description: "Get instant answers powered by real-time web search and AI.", color: "bg-chart-4/10 text-chart-4", badge: "AI + Live" },
-              { icon: GraduationCap, title: "ROI Heatmap", description: "Visualize which country and field combinations offer the best return.", color: "bg-chart-5/10 text-chart-5", badge: "Live Data" },
-              { icon: Shield, title: "Smart Insights", description: "Receive personalized recommendations based on your profile and market conditions.", color: "bg-destructive/10 text-destructive" },
-            ].map((feature, i) => (
-              <div key={i} className="bg-card rounded-2xl p-8 border border-border hover:border-primary/50 hover:shadow-lg transition-all duration-300 animate-fade-slide-up group relative" style={{ animationDelay: `${i * 100}ms` }}>
-                {feature.badge && (
-                  <div className="absolute top-4 right-4 bg-success/10 text-success text-xs font-medium px-2 py-1 rounded-full flex items-center gap-1">
-                    <Globe className="w-3 h-3" />
-                    {feature.badge}
+              {
+                icon: Calculator, title: "EMI Calculator", color: "bg-blue-600",
+                description: "Drag sliders to get your monthly EMI instantly — with year-wise breakup and lender comparison.",
+                badge: "Most Used", badgeColor: "bg-blue-100 text-blue-700", tab: "emi",
+              },
+              {
+                icon: BarChart3, title: "Loan Comparison", color: "bg-indigo-600",
+                description: "Compare SBI, HDFC Credila, Avanse and 12+ lenders side-by-side with live rates.",
+                badge: "Live Rates", badgeColor: "bg-indigo-100 text-indigo-700", tab: "compare",
+              },
+              {
+                icon: TrendingUp, title: "ROI Calculator", color: "bg-green-600",
+                description: "Know your break-even point. Calculate loan payback vs projected salary after your degree.",
+                badge: "AI-Powered", badgeColor: "bg-green-100 text-green-700", tab: "roi",
+              },
+              {
+                icon: Calculator, title: "Cost Estimator", color: "bg-orange-600",
+                description: "Full breakdown: tuition + living + visa + insurance costs by country and university.",
+                badge: "Live Data", badgeColor: "bg-orange-100 text-orange-700", tab: "estimator",
+              },
+              {
+                icon: Sparkles, title: "Ask AI", color: "bg-purple-600",
+                description: "Ask anything about education loans. AI answers grounded in real-time web search data.",
+                badge: "AI + Web", badgeColor: "bg-purple-100 text-purple-700", tab: "ask-ai",
+              },
+              {
+                icon: GraduationCap, title: "Profile Analyzer", color: "bg-pink-600",
+                description: "Get AI assessment of your admission chances and loan eligibility profile.",
+                badge: "AI", badgeColor: "bg-pink-100 text-pink-700", tab: "profile",
+              },
+            ].map((tool, i) => (
+              <Link key={i} href={`/dashboard?tab=${tool.tab}`}>
+                <div className="bg-white rounded-2xl border border-gray-200 p-6 hover:border-blue-300 hover:shadow-md transition-all cursor-pointer group h-full flex flex-col">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className={`w-11 h-11 rounded-xl ${tool.color} flex items-center justify-center`}>
+                      <tool.icon className="w-5 h-5 text-white" />
+                    </div>
+                    <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full ${tool.badgeColor}`}>{tool.badge}</span>
                   </div>
-                )}
-                <div className={`w-14 h-14 rounded-xl ${feature.color} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
-                  <feature.icon className="w-7 h-7" />
+                  <h3 className="font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">{tool.title}</h3>
+                  <p className="text-sm text-gray-500 leading-relaxed flex-1">{tool.description}</p>
+                  <div className="flex items-center gap-1 mt-4 text-blue-600 text-sm font-semibold">
+                    Open Tool <ArrowRight className="w-3.5 h-3.5" />
+                  </div>
                 </div>
-                <h3 className="text-xl font-semibold text-foreground mb-3">{feature.title}</h3>
-                <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
       </section>
 
-      {/* How It Works */}
-      <section id="how-it-works" className="py-24 px-6 bg-card border-y border-border">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16 animate-fade-slide-up">
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">How it works</h2>
-            <p className="text-muted-foreground text-lg">Three simple steps to financial clarity</p>
+      {/* ── How it Works ── */}
+      <section className="py-16 px-6 bg-white border-y border-gray-100">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-black text-gray-900 mb-2">How LoanMatters Works</h2>
+            <p className="text-gray-500">Three steps to your ideal education loan</p>
           </div>
-          
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { step: "01", title: "Enter Your Details", description: "Tell us about your target country, field of study, and loan requirements.", image: IMAGES.calculator },
-              { step: "02", title: "Get Real-Time Analysis", description: "Our AI searches the web and processes data from 150+ universities and 15+ lenders live.", image: IMAGES.ai },
-              { step: "03", title: "Make Smart Decisions", description: "Compare options with the latest market data and choose the best path forward.", image: IMAGES.success },
+              { step: "1", title: "Calculate Your EMI", description: "Use the slider calculator to find the EMI you can afford. Compare across all major lenders instantly.", icon: Calculator },
+              { step: "2", title: "Get AI Insights", description: "Ask our AI anything — loan eligibility, scholarship options, country-specific rules. Powered by real-time web data.", icon: Sparkles },
+              { step: "3", title: "Apply with Confidence", description: "Use our Loan Application Builder to generate bank-ready documents and SOP drafts in minutes.", icon: GraduationCap },
             ].map((item, i) => (
-              <div key={i} className="relative animate-fade-slide-up" style={{ animationDelay: `${i * 150}ms` }}>
-                <div className="text-8xl font-bold text-primary/10 absolute -top-4 -left-2">{item.step}</div>
-                <div className="relative pt-12">
-                  <div className="w-24 h-24 relative mb-4 rounded-2xl overflow-hidden bg-secondary">
-                    <img src={item.image} alt={item.title} className="w-full h-full object-cover opacity-80" />
-                  </div>
-                  <h3 className="text-2xl font-semibold text-foreground mb-3">{item.title}</h3>
-                  <p className="text-muted-foreground leading-relaxed">{item.description}</p>
+              <div key={i} className="flex gap-4">
+                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-blue-600 text-white font-black text-lg flex items-center justify-center">
+                  {item.step}
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-900 mb-1">{item.title}</h3>
+                  <p className="text-sm text-gray-500 leading-relaxed">{item.description}</p>
                 </div>
               </div>
             ))}
@@ -301,27 +270,92 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="py-24 px-6">
+      {/* ── Live Trends ── */}
+      <section className="py-16 px-6 bg-gray-50">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16 animate-fade-slide-up">
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">Trusted by students</h2>
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h2 className="text-2xl font-black text-gray-900">Live Market Trends</h2>
+              <p className="text-sm text-gray-500 mt-1">Real-time education loan rate movements and news</p>
+            </div>
+            <button
+              onClick={fetchMarketTrends}
+              disabled={isLoadingTrends}
+              className="flex items-center gap-2 text-sm text-blue-600 font-semibold border border-blue-200 bg-white px-4 py-2 rounded-xl hover:bg-blue-50 transition-colors disabled:opacity-60"
+            >
+              <RefreshCw className={`w-4 h-4 ${isLoadingTrends ? "animate-spin" : ""}`} />
+              Refresh
+            </button>
           </div>
+
+          {isLoadingTrends ? (
+            <div className="bg-white rounded-2xl border border-gray-200 p-12 flex items-center justify-center gap-3 text-gray-400">
+              <Loader2 className="w-6 h-6 animate-spin" />
+              <span className="text-sm">Fetching latest rates...</span>
+            </div>
+          ) : marketTrends ? (
+            <div className="space-y-4">
+              {marketTrends.answer && (
+                <div className="bg-white rounded-2xl border border-gray-200 p-6">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Sparkles className="w-4 h-4 text-blue-600" />
+                    <h3 className="font-bold text-gray-800 text-sm">AI Summary</h3>
+                    {marketTrends.fetchedAt && (
+                      <span className="text-[10px] text-gray-400 ml-auto">Updated {new Date(marketTrends.fetchedAt).toLocaleTimeString()}</span>
+                    )}
+                  </div>
+                  <p className="text-sm text-gray-600 leading-relaxed">{marketTrends.answer}</p>
+                </div>
+              )}
+              {marketTrends.results?.length > 0 && (
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {marketTrends.results.slice(0, 6).map((source, i) => (
+                    <a key={i} href={source.url} target="_blank" rel="noopener noreferrer"
+                      className="bg-white rounded-xl border border-gray-200 p-4 hover:border-blue-300 hover:shadow-sm transition-all group"
+                    >
+                      <div className="flex items-start justify-between gap-2 mb-2">
+                        <h4 className="font-medium text-sm text-gray-800 line-clamp-2 group-hover:text-blue-600 transition-colors">{source.title}</h4>
+                        <ExternalLink className="w-3.5 h-3.5 text-gray-400 shrink-0 mt-0.5" />
+                      </div>
+                      <p className="text-xs text-gray-500 line-clamp-2">{source.snippet}</p>
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="bg-white rounded-2xl border border-gray-200 p-12 text-center text-gray-400">
+              <Globe className="w-10 h-10 mx-auto mb-3 opacity-40" />
+              <p className="text-sm">Market data unavailable — add your Tavily API key in settings to enable this.</p>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* ── Testimonials ── */}
+      <section className="py-16 px-6 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-2xl font-black text-gray-900 text-center mb-10">What Students Say</h2>
           <div className="grid md:grid-cols-3 gap-6">
             {[
-              { quote: "LoanMatters helped me save over 2 lakh in interest by showing me the best lender options. The real-time rate comparison was eye-opening!", name: "Priya Sharma", role: "MS CS @ Stanford", avatar: "PS" },
-              { quote: "The cost estimator was incredibly accurate with live data. It helped my parents understand the true cost of my MS degree in Germany.", name: "Rahul Menon", role: "MS Data Science @ TUM", avatar: "RM" },
-              { quote: "The AI assistant with real-time web search answered all my niche questions about co-signer requirements. Highly recommend!", name: "Ananya Patel", role: "MBA @ Wharton", avatar: "AP" },
+              { quote: "Saved 2 lakh in interest by comparing lenders on LoanMatters. The EMI slider made everything crystal clear.", name: "Priya Sharma", role: "MS CS @ Stanford", rating: 5 },
+              { quote: "The cost estimator with live data helped my parents truly understand the cost of my MS in Germany.", name: "Rahul Menon", role: "MS Data Science @ TUM", rating: 5 },
+              { quote: "Ask AI answered every niche question about co-signer requirements. Way better than any other tool.", name: "Ananya Patel", role: "MBA @ Wharton", rating: 5 },
             ].map((t, i) => (
-              <div key={i} className="bg-card rounded-2xl p-8 border border-border animate-fade-slide-up" style={{ animationDelay: `${i * 100}ms` }}>
-                <p className="text-foreground leading-relaxed mb-6">&ldquo;{t.quote}&rdquo;</p>
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold">
-                    {t.avatar}
+              <div key={i} className="bg-gray-50 rounded-2xl border border-gray-200 p-6">
+                <div className="flex gap-0.5 mb-4">
+                  {Array.from({ length: t.rating }).map((_, j) => (
+                    <Star key={j} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                  ))}
+                </div>
+                <p className="text-gray-700 text-sm leading-relaxed mb-5">"{t.quote}"</p>
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-sm">
+                    {t.name.split(" ").map(n => n[0]).join("")}
                   </div>
                   <div>
-                    <div className="font-semibold text-foreground">{t.name}</div>
-                    <div className="text-sm text-muted-foreground">{t.role}</div>
+                    <p className="font-semibold text-gray-900 text-sm">{t.name}</p>
+                    <p className="text-xs text-gray-500">{t.role}</p>
                   </div>
                 </div>
               </div>
@@ -330,111 +364,48 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-24 px-6">
-        <div className="max-w-4xl mx-auto text-center animate-fade-slide-up">
-          <div className="bg-primary rounded-3xl p-12 md:p-16 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full blur-3xl" />
-            <div className="relative">
-              <h2 className="text-3xl md:text-5xl font-bold text-primary-foreground mb-4 text-balance">
-                Ready to plan your future?
-              </h2>
-              <p className="text-primary-foreground/80 text-lg mb-8 max-w-xl mx-auto">
-                Join thousands of students who made smarter financial decisions with real-time data.
-              </p>
-              <Link href="/dashboard">
-                <Button size="lg" variant="secondary" className="rounded-full px-8 h-14 text-base">
-                  Start Planning Now
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-              </Link>
-            </div>
+      {/* ── CTA Banner ── */}
+      <section className="py-12 px-6 bg-blue-600">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl font-black text-white mb-3">Start Planning Your Education Loan Today</h2>
+          <p className="text-blue-100 mb-7">Free to use · No signup required · Instant results</p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Link href="/dashboard">
+              <button className="bg-yellow-400 hover:bg-yellow-300 text-gray-900 font-bold px-8 py-3.5 rounded-xl text-base transition-colors flex items-center gap-2 justify-center">
+                <IndianRupee className="w-5 h-5" />
+                Open EMI Calculator
+              </button>
+            </Link>
+            <Link href="/dashboard?tab=compare">
+              <button className="bg-white/15 hover:bg-white/25 border border-white/30 text-white font-semibold px-8 py-3.5 rounded-xl text-base transition-colors flex items-center gap-2 justify-center">
+                Compare All Lenders
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-12 px-6 border-t border-border">
+      {/* ── Footer ── */}
+      <footer className="bg-gray-900 text-gray-400 py-10 px-6">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              <GraduationCap className="w-4 h-4 text-primary-foreground" />
+            <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
+              <GraduationCap className="w-4 h-4 text-white" />
             </div>
-            <span className="font-semibold text-foreground">LoanMatters</span>
+            <span className="font-bold text-white">LoanMatters</span>
+            <span className="text-xs ml-2">Education Loan Clarity for STEM Students</span>
           </div>
-          <div className="flex items-center gap-6">
-            <Link href="/blog" className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">
-              <BookOpen className="w-4 h-4" />
-              Blog
+          <div className="flex items-center gap-6 text-sm">
+            <Link href="/blog" className="hover:text-white transition-colors flex items-center gap-1">
+              <BookOpen className="w-3.5 h-3.5" /> Blog
             </Link>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Globe className="w-4 h-4" />
-              Powered by real-time web search
-            </div>
+            <Link href="/login" className="hover:text-white transition-colors">Sign In</Link>
+            <Link href="/dashboard" className="hover:text-white transition-colors">Dashboard</Link>
           </div>
-          <p className="text-sm text-muted-foreground">Made with care for STEM students worldwide</p>
+          <p className="text-xs">Made for Indian STEM students planning to study abroad</p>
         </div>
       </footer>
-
-      <PWAInstallPrompt />
-    </div>
-  )
-}
-
-function HeroIllustration() {
-  return (
-    <div className="relative w-full aspect-square max-w-xl mx-auto">
-      <div className="absolute inset-0 rounded-3xl overflow-hidden">
-        <img src={IMAGES.hero} alt="Graduation celebration" className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
-      </div>
-      
-      <div className="absolute bottom-8 left-4 right-4 md:left-8 md:right-auto">
-        <div className="bg-card/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-border p-5 max-w-xs animate-float">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-              <GraduationCap className="w-5 h-5 text-primary-foreground" />
-            </div>
-            <div>
-              <div className="font-semibold text-foreground text-sm">MS Computer Science</div>
-              <div className="text-xs text-muted-foreground">Stanford University</div>
-            </div>
-          </div>
-          <div className="grid grid-cols-3 gap-2">
-            <div className="bg-secondary rounded-lg p-2 text-center">
-              <div className="text-xs text-muted-foreground">Cost</div>
-              <div className="text-sm font-bold text-foreground">$125k</div>
-            </div>
-            <div className="bg-success/10 rounded-lg p-2 text-center">
-              <div className="text-xs text-muted-foreground">ROI</div>
-              <div className="text-sm font-bold text-success">185%</div>
-            </div>
-            <div className="bg-primary/10 rounded-lg p-2 text-center">
-              <div className="text-xs text-muted-foreground">Break-even</div>
-              <div className="text-sm font-bold text-primary">3.2yr</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <div className="absolute top-8 right-8 bg-success text-success-foreground rounded-2xl px-4 py-2 shadow-lg animate-float animation-delay-100">
-        <div className="flex items-center gap-2 text-sm font-semibold">
-          <Globe className="w-4 h-4" />
-          Live: 8.5%
-        </div>
-      </div>
-      
-      <div className="absolute top-1/2 right-4 bg-card/95 backdrop-blur-sm rounded-2xl p-3 shadow-lg border border-border animate-float animation-delay-200">
-        <div className="flex items-center gap-2">
-          <TrendingUp className="w-5 h-5 text-success" />
-          <span className="text-sm font-semibold text-foreground">$180k/yr</span>
-        </div>
-      </div>
-      
-      <div className="absolute top-16 left-4 bg-primary/10 backdrop-blur-sm rounded-2xl p-3 animate-float animation-delay-300">
-        <Calculator className="w-6 h-6 text-primary" />
-      </div>
     </div>
   )
 }
