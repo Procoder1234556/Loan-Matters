@@ -12,9 +12,9 @@ import { cn } from "@/lib/utils"
 import { IMAGES } from "@/lib/images"
 
 type RealTimeData = {
-  answer: string
-  sources: { title: string; url: string; snippet: string }[]
-  lastUpdated: string
+  answer: string | null
+  results: { title: string; url: string; snippet: string }[]
+  fetchedAt: string
 }
 
 export function LoanComparison() {
@@ -92,7 +92,7 @@ export function LoanComparison() {
               </CardTitle>
               <div className="flex items-center gap-2">
                 <span className="text-xs text-muted-foreground">
-                  Updated: {new Date(realTimeData.lastUpdated).toLocaleTimeString()}
+                  Updated: {new Date(realTimeData.fetchedAt).toLocaleTimeString()}
                 </span>
                 <Button
                   variant="ghost"
@@ -112,9 +112,9 @@ export function LoanComparison() {
                 {realTimeData.answer}
               </p>
             )}
-            {realTimeData.sources.length > 0 && (
+            {Array.isArray(realTimeData.results) && realTimeData.results.length > 0 && (
               <div className="flex flex-wrap gap-2">
-                {realTimeData.sources.slice(0, 4).map((source, i) => (
+                {realTimeData.results.slice(0, 4).map((source, i) => (
                   <a
                     key={i}
                     href={source.url}
