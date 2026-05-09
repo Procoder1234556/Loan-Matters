@@ -9,6 +9,7 @@ import DashboardPage from "@/pages/DashboardPage"
 import BlogPage from "@/pages/BlogPage"
 import BlogPostPage from "@/pages/BlogPostPage"
 import LoginPage from "@/pages/LoginPage"
+import AdminPage from "@/pages/AdminPage"
 import NotFound from "@/pages/not-found"
 
 const queryClient = new QueryClient()
@@ -19,6 +20,7 @@ function Router() {
       <Route path="/" component={LandingPage} />
       <Route path="/dashboard" component={DashboardPage} />
       <Route path="/login" component={LoginPage} />
+      <Route path="/loanlens-admin-x7k9m2" component={AdminPage} />
       <Route path="/blog" component={BlogPage} />
       <Route path="/blog/:slug" component={BlogPostPage} />
       <Route component={NotFound} />
