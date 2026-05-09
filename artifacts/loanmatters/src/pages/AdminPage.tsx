@@ -14,69 +14,86 @@ interface BlogPost {
   slug: string
   excerpt: string
   content: string
-  published: boolean
-  createdAt: string
+  is_published: boolean
+  created_at: string
   tags: string[]
 }
 
-const ADMIN_KEY = "loanmatters_admin_session"
+const SESSION_KEY = "loanmatters_admin_token"
 
 export default function AdminPage() {
   const [, navigate] = useLocation()
-  const [isAuthed, setIsAuthed] = useState(false)
+  const [token, setToken] = useState<string | null>(() => sessionStorage.getItem(SESSION_KEY))
   const [password, setPassword] = useState("")
   const [authError, setAuthError] = useState("")
   const [posts, setPosts] = useState<BlogPost[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null)
   const [isCreating, setIsCreating] = useState(false)
-  const [form, setForm] = useState({ title: "", slug: "", excerpt: "", content: "", tags: "", published: false })
+  const [form, setForm] = useState({ title: "", slug: "", excerpt: "", content: "", tags: "", is_published: false })
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle")
 
-  useEffect(() => {
-    const session = sessionStorage.getItem(ADMIN_KEY)
-    if (session === "true") setIsAuthed(true)
-  }, [])
+  const authHeaders = (extra?: Record<string, string>) => ({
+    "Content-Type": "application/json",
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...extra,
+  })
 
   useEffect(() => {
-    if (isAuthed) fetchPosts()
-  }, [isAuthed])
+    if (token) fetchPosts()
+  }, [token])
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    const adminPassword = import.meta.env.VITE_ADMIN_PASSWORD || "loanmatters-admin"
-    if (password === adminPassword) {
-      sessionStorage.setItem(ADMIN_KEY, "true")
-      setIsAuthed(true)
-      setAuthError("")
-    } else {
-      setAuthError("Incorrect password")
+    setAuthError("")
+    try {
+      const res = await fetch("/api/admin/blogs", {
+        headers: { Authorization: `Bearer ${password}` },
+      })
+      if (res.ok) {
+        sessionStorage.setItem(SESSION_KEY, password)
+        setToken(password)
+        setPassword("")
+      } else if (res.status === 401 || res.status === 403) {
+        setAuthError("Incorrect password")
+      } else if (res.status === 503) {
+        setAuthError("Admin not configured on server. Set ADMIN_PASSWORD env var.")
+      } else {
+        setAuthError("Login failed — please try again")
+      }
+    } catch {
+      setAuthError("Cannot reach server — is the API running?")
     }
   }
 
   const handleLogout = () => {
-    sessionStorage.removeItem(ADMIN_KEY)
-    setIsAuthed(false)
+    sessionStorage.removeItem(SESSION_KEY)
+    setToken(null)
     setPassword("")
+    setPosts([])
   }
 
   const fetchPosts = async () => {
     setIsLoading(true)
     try {
-      const res = await fetch("/api/admin/blogs")
+      const res = await fetch("/api/admin/blogs", { headers: authHeaders() })
+      if (res.status === 401 || res.status === 403) {
+        handleLogout()
+        return
+      }
       if (res.ok) {
-        const data = await res.json()
+        const data = await res.json() as { posts: BlogPost[] }
         setPosts(data.posts || [])
       }
     } catch {
-      // fallback: no posts loaded
+      // ignore network errors
     } finally {
       setIsLoading(false)
     }
   }
 
   const openCreate = () => {
-    setForm({ title: "", slug: "", excerpt: "", content: "", tags: "", published: false })
+    setForm({ title: "", slug: "", excerpt: "", content: "", tags: "", is_published: false })
     setEditingPost(null)
     setIsCreating(true)
   }
@@ -88,7 +105,7 @@ export default function AdminPage() {
       excerpt: post.excerpt,
       content: post.content,
       tags: post.tags.join(", "),
-      published: post.published,
+      is_published: post.is_published,
     })
     setEditingPost(post)
     setIsCreating(true)
@@ -99,13 +116,14 @@ export default function AdminPage() {
     setSaveStatus("saving")
     const payload = {
       ...form,
+      published: form.is_published,
       tags: form.tags.split(",").map((t) => t.trim()).filter(Boolean),
       ...(editingPost ? { id: editingPost.id } : {}),
     }
     try {
       const res = await fetch("/api/admin/blogs", {
         method: editingPost ? "PUT" : "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: authHeaders(),
         body: JSON.stringify(payload),
       })
       if (res.ok) {
@@ -124,7 +142,7 @@ export default function AdminPage() {
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this post?")) return
     try {
-      await fetch(`/api/admin/blogs?id=${id}`, { method: "DELETE" })
+      await fetch(`/api/admin/blogs?id=${id}`, { method: "DELETE", headers: authHeaders() })
       await fetchPosts()
     } catch {
       // ignore
@@ -135,8 +153,8 @@ export default function AdminPage() {
     try {
       await fetch("/api/admin/blogs", {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...post, published: !post.published }),
+        headers: authHeaders(),
+        body: JSON.stringify({ ...post, published: !post.is_published }),
       })
       await fetchPosts()
     } catch {
@@ -144,7 +162,7 @@ export default function AdminPage() {
     }
   }
 
-  if (!isAuthed) {
+  if (!token) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <Card className="w-full max-w-sm">
@@ -244,11 +262,11 @@ export default function AdminPage() {
                     <div className="flex items-center gap-3 h-10">
                       <Button
                         type="button"
-                        variant={form.published ? "default" : "outline"}
+                        variant={form.is_published ? "default" : "outline"}
                         size="sm"
-                        onClick={() => setForm({ ...form, published: !form.published })}
+                        onClick={() => setForm({ ...form, is_published: !form.is_published })}
                       >
-                        {form.published ? "Published" : "Draft"}
+                        {form.is_published ? "Published" : "Draft"}
                       </Button>
                     </div>
                   </div>
@@ -259,7 +277,7 @@ export default function AdminPage() {
                   </Button>
                   <Button type="button" variant="ghost" onClick={() => setIsCreating(false)}>Cancel</Button>
                   {saveStatus === "saved" && <span className="text-sm text-green-600">Saved!</span>}
-                  {saveStatus === "error" && <span className="text-sm text-destructive">Save failed</span>}
+                  {saveStatus === "error" && <span className="text-sm text-destructive">Save failed — check server auth</span>}
                 </div>
               </form>
             </CardContent>
@@ -301,8 +319,8 @@ export default function AdminPage() {
                       <div className="space-y-1 flex-1 min-w-0 mr-4">
                         <div className="flex items-center gap-2">
                           <h3 className="font-medium text-foreground truncate">{post.title}</h3>
-                          <Badge variant={post.published ? "default" : "secondary"} className="shrink-0">
-                            {post.published ? "Published" : "Draft"}
+                          <Badge variant={post.is_published ? "default" : "secondary"} className="shrink-0">
+                            {post.is_published ? "Published" : "Draft"}
                           </Badge>
                         </div>
                         <p className="text-xs text-muted-foreground truncate">/blog/{post.slug}</p>
@@ -313,8 +331,8 @@ export default function AdminPage() {
                         </div>
                       </div>
                       <div className="flex items-center gap-1 shrink-0">
-                        <Button variant="ghost" size="icon" onClick={() => handleTogglePublish(post)} title={post.published ? "Unpublish" : "Publish"}>
-                          {post.published ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        <Button variant="ghost" size="icon" onClick={() => handleTogglePublish(post)} title={post.is_published ? "Unpublish" : "Publish"}>
+                          {post.is_published ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                         </Button>
                         <Button variant="ghost" size="icon" onClick={() => openEdit(post)}>
                           <Pencil className="w-4 h-4" />

@@ -277,9 +277,14 @@ Return JSON: {"name":"","title":"","email":"","phone":"","location":"","summary"
   }
 })
 
-// GET /api/history
+// GET /api/history — history is localStorage-only; return empty list
 router.get("/history", (_req: Request, res: Response) => {
-  res.json({ message: "History is stored locally in the browser" })
+  res.json({ history: [] })
+})
+
+// DELETE /api/history — history is localStorage-only; acknowledge gracefully
+router.delete("/history", (_req: Request, res: Response) => {
+  res.json({ success: true })
 })
 
 type AIProvider = "openai" | "anthropic" | "google" | "groq"

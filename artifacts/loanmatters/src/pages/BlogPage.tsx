@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button"
 import { IMAGES } from "@/lib/images"
 import type { Blog } from "@/lib/types"
 import { BLOG_CATEGORIES } from "@/lib/types"
-import { createClient } from "@/lib/supabase/client"
 
 function formatDate(dateString: string) {
   return new Date(dateString).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
@@ -15,26 +14,27 @@ function formatDate(dateString: string) {
 
 export default function BlogPage() {
   const [blogs, setBlogs] = useState<Blog[]>([])
-  const [featuredBlogs, setFeaturedBlogs] = useState<Blog[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchBlogs = async () => {
-      const supabase = createClient()
-      if (!supabase) {
+      try {
+        const res = await fetch("/api/blogs")
+        if (res.ok) {
+          const data = await res.json() as { posts: Blog[] }
+          setBlogs(data.posts || [])
+        }
+      } catch {
+        // API unavailable — show empty state
+      } finally {
         setLoading(false)
-        return
       }
-      const { data } = await supabase.from("blogs").select("*").eq("is_published", true).order("created_at", { ascending: false })
-      const { data: featured } = await supabase.from("blogs").select("*").eq("is_published", true).eq("is_featured", true).order("created_at", { ascending: false }).limit(3)
-      setBlogs(data || [])
-      setFeaturedBlogs(featured || [])
-      setLoading(false)
     }
     fetchBlogs()
   }, [])
 
+  const featuredBlogs = blogs.filter(b => b.is_featured)
   const filteredBlogs = selectedCategory ? blogs.filter(b => b.category === selectedCategory) : blogs
 
   return (

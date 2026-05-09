@@ -14,11 +14,19 @@ import NotFound from "@/pages/not-found"
 
 const queryClient = new QueryClient()
 
+function DashboardWithSetup() {
+  return (
+    <SetupGuard>
+      <DashboardPage />
+    </SetupGuard>
+  )
+}
+
 function Router() {
   return (
     <Switch>
       <Route path="/" component={LandingPage} />
-      <Route path="/dashboard" component={DashboardPage} />
+      <Route path="/dashboard" component={DashboardWithSetup} />
       <Route path="/login" component={LoginPage} />
       <Route path="/loanlens-admin-x7k9m2" component={AdminPage} />
       <Route path="/blog" component={BlogPage} />
@@ -34,9 +42,7 @@ function App() {
       <TooltipProvider>
         <AuthProvider>
           <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-            <SetupGuard>
-              <Router />
-            </SetupGuard>
+            <Router />
           </WouterRouter>
         </AuthProvider>
         <Toaster />

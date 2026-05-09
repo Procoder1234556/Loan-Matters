@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { IMAGES } from "@/lib/images"
 import type { Blog } from "@/lib/types"
-import { createClient } from "@/lib/supabase/client"
 
 function formatDate(dateString: string) {
   return new Date(dateString).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
@@ -19,13 +18,16 @@ export default function BlogPostPage() {
   useEffect(() => {
     if (!slug) return
     const fetchBlog = async () => {
-      const supabase = createClient()
-      if (!supabase) { setLoading(false); return }
-      const { data } = await supabase.from("blogs").select("*").eq("slug", slug).eq("is_published", true).single()
-      setBlog(data)
-      setLoading(false)
-      if (data) {
-        supabase.from("blogs").update({ views: data.views + 1 }).eq("id", data.id).then(() => {})
+      try {
+        const res = await fetch(`/api/blogs/${encodeURIComponent(slug)}`)
+        if (res.ok) {
+          const data = await res.json() as { post: Blog }
+          setBlog(data.post)
+        }
+      } catch {
+        // API unavailable — blog stays null
+      } finally {
+        setLoading(false)
       }
     }
     fetchBlog()
