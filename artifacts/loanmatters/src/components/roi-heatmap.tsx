@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Grid3X3, TrendingUp, AlertTriangle, Minus, Globe, RefreshCw, ExternalLink, Loader2, X } from "lucide-react"
 import { roiHeatmap, countries, heatmapFields, type ROILevel } from "@/lib/data"
-// Image replaced with img
 import { cn } from "@/lib/utils"
 import { IMAGES } from "@/lib/images"
 

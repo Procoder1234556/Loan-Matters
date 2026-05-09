@@ -25,7 +25,6 @@ import {
   FileCheck,
   Landmark
 } from "lucide-react"
-// Image replaced with img
 import { IMAGES } from "@/lib/images"
 
 const AI_PROVIDERS = [

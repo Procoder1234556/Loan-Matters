@@ -22,7 +22,6 @@ import {
   GraduationCap,
   Lightbulb
 } from "lucide-react"
-// Image replaced with img
 import { IMAGES } from "@/lib/images"
 
 interface ResumeData {

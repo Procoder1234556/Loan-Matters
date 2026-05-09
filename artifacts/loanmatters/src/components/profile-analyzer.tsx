@@ -33,7 +33,6 @@ import {
   Eye,
   EyeOff
 } from "lucide-react"
-// Image replaced with img
 
 interface AnalysisResult {
   overallScore: number

@@ -60,9 +60,7 @@ export function DashboardHeader({ activeTab }: DashboardHeaderProps) {
                     <img
                       src={user.user_metadata.avatar_url}
                       alt={user.user_metadata?.full_name || "User"}
-                      width={40}
-                      height={40}
-                      className="rounded-xl"
+                      className="w-10 h-10 rounded-xl object-cover"
                     />
                   ) : (
                     <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -94,7 +92,7 @@ export function DashboardHeader({ activeTab }: DashboardHeaderProps) {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Link href="/auth/login">
+            <Link href="/login">
               <Button variant="outline" size="sm" className="gap-2">
                 <LogIn className="w-4 h-4" />
                 <span className="hidden md:inline">Sign in</span>
@@ -106,7 +104,7 @@ export function DashboardHeader({ activeTab }: DashboardHeaderProps) {
       {!loading && !user && (
         <div className="mt-3 p-3 rounded-xl bg-primary/5 border border-primary/10 hidden md:block">
           <p className="text-sm text-muted-foreground">
-            <Link href="/auth/login" className="text-primary font-medium hover:underline">
+            <Link href="/login" className="text-primary font-medium hover:underline">
               Sign in
             </Link>{" "}
             to save your calculations and access them from anywhere.

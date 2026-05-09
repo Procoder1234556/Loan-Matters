@@ -15,8 +15,8 @@ interface TavilyResponse {
 }
 
 async function tavilySearch(query: string, options: Record<string, unknown> = {}, clientApiKey?: string): Promise<TavilyResponse> {
-  const apiKey = clientApiKey || process.env.TAVILY_API_KEY
-  if (!apiKey) throw new Error("Tavily API key not configured")
+  const apiKey = clientApiKey
+  if (!apiKey) throw new Error("Tavily API key required — please provide your key in the app settings")
 
   const response = await fetch("https://api.tavily.com/search", {
     method: "POST",

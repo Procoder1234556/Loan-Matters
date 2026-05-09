@@ -8,6 +8,7 @@ import LandingPage from "@/pages/LandingPage"
 import DashboardPage from "@/pages/DashboardPage"
 import BlogPage from "@/pages/BlogPage"
 import BlogPostPage from "@/pages/BlogPostPage"
+import LoginPage from "@/pages/LoginPage"
 import NotFound from "@/pages/not-found"
 
 const queryClient = new QueryClient()
@@ -17,6 +18,7 @@ function Router() {
     <Switch>
       <Route path="/" component={LandingPage} />
       <Route path="/dashboard" component={DashboardPage} />
+      <Route path="/login" component={LoginPage} />
       <Route path="/blog" component={BlogPage} />
       <Route path="/blog/:slug" component={BlogPostPage} />
       <Route component={NotFound} />

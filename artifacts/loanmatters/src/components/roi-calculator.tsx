@@ -8,7 +8,6 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts"
 import { TrendingUp, Wallet, Clock, Target, DollarSign, Globe, RefreshCw, ExternalLink, Loader2 } from "lucide-react"
-// Image replaced with img
 import { countries, fields, salaryEstimates, calculateEMI, calculateBreakeven, formatCurrency } from "@/lib/data"
 import { IMAGES } from "@/lib/images"
 

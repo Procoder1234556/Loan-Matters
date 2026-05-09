@@ -8,7 +8,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "@/components/ui/input"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts"
 import { Calculator, GraduationCap, Plane, Home, FileText, Sparkles, Globe, RefreshCw, ExternalLink, Loader2 } from "lucide-react"
-// Image replaced with img
 import { countries, fields, universityCosts, formatCurrency } from "@/lib/data"
 import { IMAGES } from "@/lib/images"
 

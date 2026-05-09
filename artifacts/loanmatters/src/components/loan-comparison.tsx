@@ -8,7 +8,6 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Scale, Check, Star, Info, ChevronDown, ChevronUp, Globe, RefreshCw, ExternalLink, Loader2 } from "lucide-react"
 import { loanProviders, formatCurrency } from "@/lib/data"
-// Image replaced with img
 import { cn } from "@/lib/utils"
 import { IMAGES } from "@/lib/images"
 

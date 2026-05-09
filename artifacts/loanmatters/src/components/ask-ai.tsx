@@ -8,7 +8,6 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { MessageSquare, Send, Key, Bot, User, Loader2, AlertCircle, Eye, EyeOff, Globe, ExternalLink, Search } from "lucide-react"
 import { cn } from "@/lib/utils"
-// Image replaced with img
 import { IMAGES } from "@/lib/images"
 
 type SearchResult = {

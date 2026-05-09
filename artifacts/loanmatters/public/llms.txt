@@ -1,0 +1,38 @@
+# LoanMatters
+> AI-powered education loan comparison for Indian STEM students planning to study abroad (US, UK, Canada, Germany, Australia).
+> We are an information-only platform. We do not originate loans, collect applications, or sell user data. We never spam.
+
+## What's here
+- / — Homepage with live market trends and loan comparison overview (Tavily-powered, updated on demand)
+- /dashboard — 10 AI-powered tools: cost estimator, ROI calculator, loan comparison, ROI heatmap, profile analyzer, application builder, loan application builder, resume builder, Ask AI, history
+- /blog — Guides on Indian education loan products, eligibility, and studying abroad
+- /login — Optional sign-in to sync data across devices (Supabase OAuth, not required to use the app)
+
+## Key tools available
+- **Cost Estimator** — Itemized tuition, living, visa, travel, and misc costs by country and STEM field. Countries: USA, UK, Canada, Germany, Australia.
+- **ROI Calculator** — Loan repayment timeline, EMI, break-even analysis using real salary benchmarks for STEM fields.
+- **Loan Comparison** — Side-by-side comparison of SBI, HDFC Credila, Avanse, Auxilo, ICICI Bank, Axis Bank, Bank of Baroda with interest rates, collateral requirements, processing fees, and eligibility.
+- **ROI Heatmap** — Country × STEM-field matrix showing return-on-investment scores.
+- **Profile Analyzer** — AI admission chance assessment with profile breakdown (academics, research, work experience, extracurriculars, test scores).
+- **Application Builder** — AI-generated personal statement and statement of purpose for university applications.
+- **Loan Application Builder** — Structured ready-to-submit bank loan application document.
+- **ATS Resume Builder** — ATS-optimized STEM resume generator with score feedback.
+- **Ask AI** — Real-time web-grounded Q&A on education loans, eligibility, documents required.
+
+## Key data points
+- Interest rates (min/max) for 6+ lenders
+- Collateral requirements by loan amount and lender
+- Countries and STEM courses covered
+- Processing fees and prepayment charges
+- Government subsidy eligibility (CSIS, Dr. Ambedkar scheme)
+- Salary estimates post-graduation by country and field (CS, EE, ME, Data Science, Biotech, Finance, MBA)
+- University cost benchmarks for 5 countries × 7 STEM fields
+
+## Brand values
+- We never sell user data. We never spam. We just compare.
+- Faster, cleaner, more honest than BankBazaar or Paisabazaar.
+- Niche: education loans for abroad studies — go deep, not broad.
+- API keys are stored only in the user's browser, never on our servers.
+
+## Contact
+- Website: https://loanmatters.in
