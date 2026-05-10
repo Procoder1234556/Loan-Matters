@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { Link, useSearch } from "wouter"
 import { GraduationCap, Calculator, TrendingUp, Scale, Grid3X3, MessageSquare,
   UserCheck, FileText, Landmark, Briefcase, Settings, Home, BookOpen,
-  ChevronDown, Bell, User, LogOut, LogIn, IndianRupee } from "lucide-react"
+  ChevronDown, Bell, User, LogOut, LogIn, IndianRupee, Sparkles } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useAuth } from "@/lib/auth-context"
 import { EmiCalculator } from "@/components/emi-calculator"
@@ -11,6 +11,7 @@ import { ROICalculator } from "@/components/roi-calculator"
 import { LoanComparison } from "@/components/loan-comparison"
 import { ROIHeatmap } from "@/components/roi-heatmap"
 import { AskAI } from "@/components/ask-ai"
+import { CompareAgent } from "@/components/compare-agent"
 import { ProfileAnalyzer } from "@/components/profile-analyzer"
 import { ApplicationBuilder } from "@/components/application-builder"
 import { LoanApplicationBuilder } from "@/components/loan-application-builder"
@@ -37,6 +38,7 @@ const PRIMARY_TABS: NavTab[] = [
   { id: "estimator", label: "Cost Estimator", icon: IndianRupee, group: "calculators" },
   { id: "heatmap", label: "ROI Heatmap", icon: Grid3X3, group: "calculators" },
   { id: "ask-ai", label: "Ask AI", icon: MessageSquare, group: "ai-tools" },
+  { id: "compare-agent", label: "Loan Advisor AI", icon: Sparkles, group: "ai-tools" },
   { id: "profile", label: "Profile Analyzer", icon: UserCheck, group: "ai-tools" },
 ]
 
@@ -60,6 +62,7 @@ const TAB_TITLES: Record<string, { title: string; subtitle: string }> = {
   "loan-app": { title: "Loan Application Builder", subtitle: "Bank-ready loan application document" },
   resume: { title: "Resume Builder", subtitle: "STEM-optimized ATS resume generator" },
   "ask-ai": { title: "Ask AI", subtitle: "Get instant answers with real-time web grounding" },
+  "compare-agent": { title: "Loan Advisor AI", subtitle: "Personalized loan recommendation — just describe your situation" },
   settings: { title: "Settings", subtitle: "Configure API keys and preferences" },
 }
 
@@ -91,6 +94,7 @@ export default function DashboardPage() {
       case "loan-app": return <LoanApplicationBuilder />
       case "resume": return <ResumeBuilder />
       case "ask-ai": return <AskAI />
+      case "compare-agent": return <CompareAgent />
       case "settings": return <SettingsPanel />
       default: return <EmiCalculator />
     }
