@@ -1,0 +1,132 @@
+# LoanMatters — Full Loan Data Reference
+Last updated: 2025
+
+This file contains complete plain-text loan data for AI ingestion. All figures are approximate and subject to change. Always verify directly with the lender.
+
+---
+
+## SBI Global ED-VANTAGE
+
+SBI (State Bank of India) offers the Global ED-VANTAGE scheme for Indian students going abroad. Interest rates range from 10.90% to 11.15% per annum (floating, linked to repo rate). Maximum loan amount is ₹1.5 crore. Collateral is required for loans above ₹7.5 lakh — typically property valued at 1.25× the loan amount. Processing fee is nil. Repayment period is up to 15 years after the course ends plus a 12-month moratorium. The scheme covers all accredited universities in the US, UK, Canada, Australia, Germany, and other countries. Collateral accepted includes immovable property, government bonds, LIC policies, and fixed deposits. SBI charges no prepayment penalty. This scheme is eligible for interest subsidy under the Central Sector Interest Subsidy (CSIS) scheme for students from economically weaker sections.
+
+---
+
+## HDFC Credila Education Loan
+
+HDFC Credila is India's first dedicated education loan company. Interest rates range from 10.50% to 13.50% per annum, depending on the applicant's profile, co-applicant income, and university ranking. Maximum loan amount is ₹1 crore or higher for top-ranked universities. Collateral may be required above ₹40 lakh. Processing fee ranges from 0.5% to 1% of the loan amount. Repayment period is up to 12 years. HDFC Credila is preferred for top 200 QS-ranked universities and offers pre-admission loans (you can get a conditional sanction before you receive your admit letter). Prepayment is allowed without penalty after a lock-in period.
+
+---
+
+## Avanse Financial Services
+
+Avanse is a non-banking financial company (NBFC) specializing in education loans. Interest rates range from 11.00% to 14.00% per annum. Maximum loan amount is ₹75 lakh without collateral in some cases, and higher with collateral. Processing fee is 1% to 2% of the loan amount. Avanse covers 100% of tuition fees, living costs, and travel expenses. Repayment tenure is up to 10 years. Avanse is known for faster approval times (7–10 business days) and serves students going to over 4,500 universities in 50+ countries. Collateral options include property, FDs, and third-party guarantees.
+
+---
+
+## Auxilo Education Loan
+
+Auxilo Finserve is an NBFC focused exclusively on education loans. Interest rates range from 11.00% to 15.00% per annum. Maximum loan amount is ₹65 lakh. Collateral is required above ₹20 lakh. Processing fee is 1% to 2%. Auxilo specializes in students going to universities in the US, UK, Canada, and Australia for STEM, MBA, and health sciences programs. Repayment tenure is up to 10 years. Auxilo is known for flexible co-applicant criteria (parents, siblings, or spouse).
+
+---
+
+## ICICI Bank Education Loan
+
+ICICI Bank offers education loans for abroad studies at interest rates ranging from 10.75% to 12.50% per annum. Maximum loan amount is ₹1 crore. Collateral required above ₹40 lakh. Processing fee is 0% to 1%. Repayment period is up to 10 years. ICICI offers pre-approved loans for students with existing banking relationships. The bank covers tuition, living, books, equipment, and travel expenses.
+
+---
+
+## Axis Bank Education Loan
+
+Axis Bank provides education loans for international studies at interest rates from 10.70% to 12.00% per annum. Maximum loan amount is ₹75 lakh. Collateral required above ₹40 lakh. Processing fee is 0.5% to 1%. Repayment up to 15 years. Axis Bank supports students going to the US, UK, Canada, Australia, Germany, Singapore, and other destinations. The bank has tie-ups with several universities for faster processing.
+
+---
+
+## Bank of Baroda Baroda Scholar
+
+Bank of Baroda's Baroda Scholar scheme offers education loans for premier institutions abroad. Interest rates from 10.85% to 11.50% per annum. Maximum loan amount is ₹80 lakh. Collateral required above ₹7.5 lakh. Processing fee is nil for government banks. Repayment up to 15 years. The scheme offers preferential rates for students admitted to the top 200 QS World University Rankings.
+
+---
+
+## University Cost Estimates (Annual, in USD/GBP/CAD/EUR/AUD)
+
+### United States
+- Computer Science MS: Tuition $25,000–$55,000/yr, Living $18,000–$25,000/yr
+- Electrical Engineering MS: Tuition $22,000–$50,000/yr, Living $18,000–$25,000/yr
+- Mechanical Engineering MS: Tuition $20,000–$45,000/yr, Living $18,000–$24,000/yr
+- Data Science MS: Tuition $25,000–$55,000/yr, Living $18,000–$25,000/yr
+- MBA: Tuition $50,000–$85,000/yr, Living $22,000–$30,000/yr
+
+### United Kingdom
+- Computer Science MS: Tuition £18,000–£35,000/yr, Living £12,000–£18,000/yr
+- Engineering MS: Tuition £16,000–£32,000/yr, Living £12,000–£16,000/yr
+- MBA: Tuition £25,000–£55,000/yr, Living £14,000–£20,000/yr
+
+### Canada
+- Computer Science MS: Tuition CAD $18,000–$35,000/yr, Living CAD $14,000–$20,000/yr
+- Engineering MS: Tuition CAD $16,000–$30,000/yr, Living CAD $13,000–$18,000/yr
+
+### Germany
+- Most public universities charge no tuition; semester fees €150–€350
+- Living costs €10,000–€14,000/yr in major cities
+
+### Australia
+- Computer Science MS: Tuition AUD $36,000–$50,000/yr, Living AUD $20,000–$28,000/yr
+- Engineering MS: Tuition AUD $32,000–$46,000/yr, Living AUD $20,000–$26,000/yr
+
+---
+
+## Post-Graduation Salary Estimates (Annual, starting salary)
+
+### United States
+- Computer Science: $95,000–$130,000/yr
+- Electrical Engineering: $85,000–$115,000/yr
+- Mechanical Engineering: $75,000–$100,000/yr
+- Data Science: $90,000–$125,000/yr
+- Biotechnology: $70,000–$95,000/yr
+- MBA (Finance): $90,000–$140,000/yr
+
+### United Kingdom
+- Computer Science: £40,000–£65,000/yr
+- Engineering: £35,000–£55,000/yr
+- Data Science: £42,000–£65,000/yr
+- MBA: £50,000–£80,000/yr
+
+### Canada
+- Computer Science: CAD $70,000–$100,000/yr
+- Engineering: CAD $65,000–$90,000/yr
+- Data Science: CAD $70,000–$95,000/yr
+
+### Germany
+- Engineering: €45,000–€65,000/yr
+- Computer Science: €48,000–$70,000/yr
+
+### Australia
+- Computer Science: AUD $80,000–$110,000/yr
+- Engineering: AUD $75,000–$100,000/yr
+
+---
+
+## Government Subsidy Schemes
+
+### Central Sector Interest Subsidy (CSIS) Scheme
+Available to students from families with annual income below ₹4.5 lakh. Covers interest during the moratorium period for loans up to ₹7.5 lakh from scheduled banks under the IBA Model Education Loan Scheme.
+
+### Dr. Ambedkar Central Sector Scheme
+For students belonging to OBC and EBC categories for studies abroad. Annual family income below ₹8 lakh. Full interest subsidy during moratorium. Loans must be taken from scheduled banks.
+
+---
+
+## Key Documents Required for Education Loan Application (India)
+
+- Admission letter from the university
+- Proof of age and identity (Aadhaar, PAN)
+- 10th, 12th, and graduation mark sheets
+- GRE/GMAT/IELTS/TOEFL score cards
+- Last 6 months' bank statements (applicant + co-applicant)
+- Co-applicant income proof: ITR (last 2 years), salary slips (last 3 months)
+- Collateral documents (if applicable): property papers, valuation report
+- Fee structure / cost of attendance letter from university
+
+---
+
+*Source: LoanMatters research team. Rates and figures are indicative and subject to change. Verify with lenders before applying.*
