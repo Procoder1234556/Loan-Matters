@@ -139,15 +139,28 @@ router.post("/roi-insights", async (req: Request, res: Response) => {
 // POST /api/analyze-profile
 router.post("/analyze-profile", async (req: Request, res: Response): Promise<void> => {
   try {
-    const { profile, targetUniversity, targetProgram, apiKey, provider } = req.body
+    // Accept both frontend shape (profileDetails, universityPreferences, modelProvider)
+    // and legacy shape (profile, targetUniversity, targetProgram, provider)
+    const {
+      profileDetails, universityPreferences, modelProvider,
+      profile: profileLegacy, targetUniversity: targetUniversityLegacy, targetProgram: targetProgramLegacy, provider: providerLegacy,
+      apiKey,
+    } = req.body
+
+    const profile = profileDetails ?? profileLegacy
+    const provider = modelProvider ?? providerLegacy
+    const universities: string[] = Array.isArray(universityPreferences) ? universityPreferences : (targetUniversityLegacy ? [targetUniversityLegacy] : [])
+    const targetProgram = targetProgramLegacy ?? ""
+
     if (!profile || !apiKey || !provider) {
       res.status(400).json({ error: "Missing required fields" }); return
     }
 
     let universityContext = ""
+    const searchTarget = universities.length > 0 ? universities[0] : "top US universities"
     try {
       const data = await tavilySearch(
-        `${targetUniversity} ${targetProgram} admission requirements average GPA GRE TOEFL 2024`,
+        `${searchTarget} ${targetProgram} admission requirements average GPA GRE TOEFL 2024`,
         { max_results: 3 }
       )
       universityContext = data.results?.map((r) => r.content).join("\n").slice(0, 2000) || ""
@@ -179,7 +192,9 @@ Provide a JSON response with:
   "summary": "Overall summary of the candidate"
 }`
 
-    const result = await callAI(provider, apiKey, systemPrompt, `Profile:\n${JSON.stringify(profile, null, 2)}\nTarget: ${targetUniversity} - ${targetProgram}`)
+    const profileText = typeof profile === "string" ? profile : JSON.stringify(profile, null, 2)
+    const targetText = universities.length > 0 ? universities.join(", ") : "top STEM programs"
+    const result = await callAI(provider, apiKey, systemPrompt, `Profile:\n${profileText}\nTarget universities: ${targetText}${targetProgram ? ` — ${targetProgram}` : ""}`)
     const json = extractJSON(result)
     res.json({ success: true, analysis: json })
   } catch (error) {
