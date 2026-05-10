@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { 
   Key, Sparkles, CheckCircle2, Eye, EyeOff, Globe, ArrowRight, GraduationCap,
-  Zap, Shield, HardDrive
+  Zap, Shield, HardDrive, Github, Lock
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { setAPIConfig, markSetupComplete, isSetupComplete, type APIConfig } from "@/lib/local-storage"
@@ -88,26 +88,31 @@ export function SetupWizard({ onComplete }: SetupWizardProps) {
                 <Sparkles className="w-5 h-5 text-primary" />
                 How LoanMatters Works
               </CardTitle>
-              <CardDescription>This app uses AI and real-time web search to give you the most accurate information</CardDescription>
+              <CardDescription>100% open source — AI-powered loan guidance that runs entirely in your browser</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid gap-4">
+              <div className="grid gap-3">
                 {[
-                  { icon: Globe, title: "Real-time Web Search", desc: "Tavily API fetches live loan rates and market data", color: "bg-blue-500/10 text-blue-600" },
-                  { icon: Zap, title: "AI Analysis", desc: "Your choice of AI provider analyzes and personalizes insights", color: "bg-purple-500/10 text-purple-600" },
-                  { icon: HardDrive, title: "Local Storage", desc: "Your API keys are stored locally, never sent to our servers", color: "bg-green-500/10 text-green-600" },
-                  { icon: Shield, title: "Privacy First", desc: "Open source and transparent — you control your data", color: "bg-orange-500/10 text-orange-600" },
+                  { icon: Github, title: "Fully Open Source", desc: "The entire codebase is public. Audit every line — no hidden logic, no black boxes.", color: "bg-slate-500/10 text-slate-600" },
+                  { icon: Lock, title: "Zero Server Storage", desc: "We never store your API keys, queries, or results. Nothing you do here touches our servers.", color: "bg-red-500/10 text-red-600" },
+                  { icon: HardDrive, title: "Your Data, Your Device", desc: "All keys and history are saved in your browser's localStorage — only you can access them.", color: "bg-green-500/10 text-green-600" },
+                  { icon: Globe, title: "Real-time Web Search", desc: "Tavily fetches live loan rates directly to your browser. The data never passes through us.", color: "bg-blue-500/10 text-blue-600" },
+                  { icon: Zap, title: "Bring Your Own AI", desc: "Your AI API key goes straight from your browser to OpenAI / Anthropic / Google / Groq.", color: "bg-purple-500/10 text-purple-600" },
+                  { icon: Shield, title: "Self-Host Anytime", desc: "Clone the repo and run it locally or on your own server — full control, always.", color: "bg-orange-500/10 text-orange-600" },
                 ].map((item) => (
-                  <div key={item.title} className="flex items-start gap-4 p-4 rounded-xl bg-secondary/50">
-                    <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0", item.color)}>
-                      <item.icon className="w-5 h-5" />
+                  <div key={item.title} className="flex items-start gap-3 p-3 rounded-xl bg-secondary/50">
+                    <div className={cn("w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0", item.color)}>
+                      <item.icon className="w-4 h-4" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-foreground">{item.title}</h3>
-                      <p className="text-sm text-muted-foreground">{item.desc}</p>
+                      <h3 className="font-semibold text-foreground text-sm">{item.title}</h3>
+                      <p className="text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
                     </div>
                   </div>
                 ))}
+              </div>
+              <div className="p-3 rounded-lg border border-primary/20 bg-primary/5 text-sm text-center text-muted-foreground">
+                Your API keys are <span className="font-semibold text-foreground">never transmitted to LoanMatters servers</span> — they go directly from your browser to the AI provider.
               </div>
               <Button onClick={() => setStep(2)} className="w-full">
                 Get Started <ArrowRight className="ml-2 w-4 h-4" />
@@ -124,7 +129,7 @@ export function SetupWizard({ onComplete }: SetupWizardProps) {
                 Tavily API Key
               </CardTitle>
               <CardDescription>
-                Tavily provides real-time web search for live loan rates and market trends.{" "}
+                Tavily powers real-time web search for live loan rates and market data.{" "}
                 <a href="https://tavily.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                   Get a free key at tavily.com
                 </a>
@@ -152,9 +157,17 @@ export function SetupWizard({ onComplete }: SetupWizardProps) {
                 </div>
                 {validationError && <p className="text-sm text-destructive">{validationError}</p>}
               </div>
-              <div className="p-3 rounded-lg bg-blue-50 text-blue-700 text-sm">
-                <Key className="w-4 h-4 inline mr-2" />
-                Free tier includes 1,000 searches/month — plenty for personal use
+              <div className="space-y-2">
+                <div className="p-3 rounded-lg bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 text-sm flex items-start gap-2">
+                  <Key className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                  <span>Free tier includes 1,000 searches/month — plenty for personal use</span>
+                </div>
+                <div className="p-3 rounded-lg bg-green-50 dark:bg-green-950/30 text-green-700 dark:text-green-300 text-sm flex items-start gap-2">
+                  <Lock className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                  <span>
+                    <span className="font-semibold">Stored on your device only.</span> This key is saved in your browser's localStorage. It is sent directly to Tavily — never to LoanMatters servers.
+                  </span>
+                </div>
               </div>
               <div className="flex gap-3">
                 <Button variant="outline" onClick={() => setStep(1)} className="flex-1">Back</Button>
@@ -215,6 +228,12 @@ export function SetupWizard({ onComplete }: SetupWizardProps) {
                   </button>
                 </div>
                 {validationError && <p className="text-sm text-destructive">{validationError}</p>}
+                <div className="p-3 rounded-lg bg-green-50 dark:bg-green-950/30 text-green-700 dark:text-green-300 text-sm flex items-start gap-2">
+                  <Lock className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                  <span>
+                    <span className="font-semibold">Private &amp; local.</span> Your key is saved only in your browser's localStorage and sent directly to {AI_PROVIDERS.find(p => p.id === selectedProvider)?.name}. LoanMatters never sees or logs it.
+                  </span>
+                </div>
               </div>
               <div className="flex gap-3">
                 <Button variant="outline" onClick={() => setStep(2)} className="flex-1">Back</Button>
@@ -233,20 +252,29 @@ export function SetupWizard({ onComplete }: SetupWizardProps) {
               </CardTitle>
               <CardDescription>LoanMatters is configured and ready to help you make smart financial decisions</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid gap-3">
+            <CardContent className="space-y-5">
+              <div className="grid gap-2">
                 <div className="flex items-center gap-3 p-3 rounded-xl bg-success/10">
-                  <CheckCircle2 className="w-5 h-5 text-success" />
-                  <span className="text-sm font-medium">Tavily API configured for real-time data</span>
+                  <CheckCircle2 className="w-5 h-5 text-success flex-shrink-0" />
+                  <span className="text-sm font-medium">Tavily API configured for real-time web search</span>
                 </div>
                 <div className="flex items-center gap-3 p-3 rounded-xl bg-success/10">
-                  <CheckCircle2 className="w-5 h-5 text-success" />
+                  <CheckCircle2 className="w-5 h-5 text-success flex-shrink-0" />
                   <span className="text-sm font-medium">{AI_PROVIDERS.find(p => p.id === selectedProvider)?.name} AI ready for analysis</span>
                 </div>
                 <div className="flex items-center gap-3 p-3 rounded-xl bg-success/10">
-                  <CheckCircle2 className="w-5 h-5 text-success" />
-                  <span className="text-sm font-medium">Keys stored locally on your device</span>
+                  <CheckCircle2 className="w-5 h-5 text-success flex-shrink-0" />
+                  <span className="text-sm font-medium">All keys stored locally — only accessible by you</span>
                 </div>
+              </div>
+              <div className="p-4 rounded-xl border border-border bg-secondary/30 space-y-2">
+                <p className="text-xs font-semibold text-foreground uppercase tracking-wide">Open Source Privacy Guarantee</p>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  LoanMatters is 100% open source. Your API keys, search queries, and results are <span className="font-semibold text-foreground">never stored on our servers</span>. Everything lives in your browser's localStorage on your device. You can export, wipe, or inspect your data at any time from Settings.
+                </p>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  In the self-hosted (open source) version, all data stays entirely within your own infrastructure — your server, your database, your rules.
+                </p>
               </div>
               <Button onClick={handleComplete} className="w-full" size="lg">
                 Start Exploring <ArrowRight className="ml-2 w-5 h-5" />

@@ -18,7 +18,11 @@ import {
   Settings,
   Database,
   Sparkles,
-  Globe
+  Globe,
+  Github,
+  Lock,
+  HardDrive,
+  Shield
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { 
@@ -167,24 +171,31 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
         )}
       </div>
 
-      {/* Open Source Mode Toggle */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Database className="w-5 h-5" />
-            Open Source Mode
+      {/* Open Source Info */}
+      <Card className="border-primary/20 bg-primary/5">
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Github className="w-5 h-5" />
+            100% Open Source &amp; Privacy-First
           </CardTitle>
-          <CardDescription>
-            Enable to use your own API keys and store data locally
-          </CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="flex items-center justify-between">
+        <CardContent className="space-y-3">
+          <div className="grid gap-2">
+            {[
+              { icon: Lock, text: "No data is ever saved on LoanMatters servers — not your keys, not your queries, not your results." },
+              { icon: HardDrive, text: "Everything is stored in your browser's localStorage, on your device only. Only you can access it." },
+              { icon: Shield, text: "In the self-hosted (open source) version, all data lives entirely within your own system — your server, your database, your rules." },
+            ].map((item) => (
+              <div key={item.text} className="flex items-start gap-2 text-sm">
+                <item.icon className="w-4 h-4 mt-0.5 flex-shrink-0 text-primary" />
+                <span className="text-muted-foreground leading-relaxed">{item.text}</span>
+              </div>
+            ))}
+          </div>
+          <div className="flex items-center justify-between pt-2 border-t border-border/50">
             <div>
-              <p className="font-medium">Use Local Storage</p>
-              <p className="text-sm text-muted-foreground">
-                API keys and history stored on your device only
-              </p>
+              <p className="text-sm font-medium">Open Source Mode</p>
+              <p className="text-xs text-muted-foreground">Mark as self-hosted / running locally</p>
             </div>
             <Switch checked={isOpenSource} onCheckedChange={toggleOpenSource} />
           </div>
@@ -199,7 +210,7 @@ export function SettingsPanel({ onClose }: SettingsPanelProps) {
             API Configuration
           </CardTitle>
           <CardDescription>
-            Your API keys are stored locally and never sent to our servers
+            Keys go directly from your browser to the AI provider — LoanMatters never sees them
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
