@@ -213,7 +213,10 @@ router.post("/blog-agent", async (req: Request, res: Response): Promise<void> =>
   try {
     const adminPassword = process.env.ADMIN_PASSWORD
     const authHeader = req.headers.authorization
-    if (adminPassword && authHeader !== `Bearer ${adminPassword}`) {
+    if (!adminPassword) {
+      res.status(503).json({ error: "Admin features not configured" }); return
+    }
+    if (authHeader !== `Bearer ${adminPassword}`) {
       res.status(401).json({ error: "Unauthorized" }); return
     }
 
@@ -242,7 +245,10 @@ router.post("/rate-agent", async (req: Request, res: Response): Promise<void> =>
   try {
     const adminPassword = process.env.ADMIN_PASSWORD
     const authHeader = req.headers.authorization
-    if (adminPassword && authHeader !== `Bearer ${adminPassword}`) {
+    if (!adminPassword) {
+      res.status(503).json({ error: "Admin features not configured" }); return
+    }
+    if (authHeader !== `Bearer ${adminPassword}`) {
       res.status(401).json({ error: "Unauthorized" }); return
     }
 

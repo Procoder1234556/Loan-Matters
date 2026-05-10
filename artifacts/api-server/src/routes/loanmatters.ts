@@ -66,7 +66,7 @@ router.get("/market-trends", async (req: Request, res: Response) => {
 // GET or POST /api/loan-rates
 async function loanRatesHandler(req: Request, res: Response) {
   try {
-    const tavilyApiKey = req.body?.tavilyApiKey as string | undefined
+    const tavilyApiKey = (req.query.tavilyApiKey ?? req.body?.tavilyApiKey) as string | undefined
     const data = await tavilySearch(
       "India education loan interest rates 2024 2025 SBI HDFC Axis Bank Credila comparison best rates",
       {},
