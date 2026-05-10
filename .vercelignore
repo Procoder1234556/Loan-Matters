@@ -1,0 +1,12 @@
+.migration-backup/
+artifacts/mockup-sandbox/
+artifacts/api-server/dist/
+artifacts/loanmatters/dist/
+lib/
+scripts/
+packages/
+node_modules/
+.local/
+.git/
+**/*.log
+**/.cache/
