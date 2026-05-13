@@ -4,7 +4,7 @@ import { GraduationCap, Calculator, TrendingUp, Scale, Grid3X3, MessageSquare,
   UserCheck, FileText, Landmark, Briefcase, Settings, Home, BookOpen,
   ChevronDown, Bell, User, LogOut, LogIn, IndianRupee, Sparkles } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { useAuth } from "@/lib/auth-context"
+import { useAuth } from "@/lib/auth-provider"
 import { EmiCalculator } from "@/components/emi-calculator"
 import { CostEstimator } from "@/components/cost-estimator"
 import { ROICalculator } from "@/components/roi-calculator"
