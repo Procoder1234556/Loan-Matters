@@ -2,9 +2,10 @@
   "buildCommand": "pnpm --filter @workspace/loanmatters run build:vercel",
   "outputDirectory": "artifacts/loanmatters/dist",
   "framework": null,
-  "installCommand": "pnpm install",
+  "installCommand": "pnpm install --no-frozen-lockfile",
   "functions": {
     "api/index.ts": {
+      "runtime": "@vercel/node@5",
       "memory": 1024,
       "maxDuration": 30
     }
